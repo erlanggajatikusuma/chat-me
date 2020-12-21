@@ -13,13 +13,8 @@ const SearchBar = () => {
         justifyContent: 'space-between',
         paddingHorizontal: 10,
       }}>
-      <Text>ChatMe</Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: 'yellow',
-          alignItems: 'center',
-        }}>
+      <Text style={{fontSize: 24, fontWeight: 'bold'}}>ChatMe</Text>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={{paddingRight: 20}}>
           <SearchIcon width={25} height={25} />
         </View>
