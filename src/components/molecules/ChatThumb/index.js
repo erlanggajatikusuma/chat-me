@@ -3,7 +3,7 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import photo from '../../../assets/image/hachiman.jpg';
 
-const ChatThumb = ({name, onPress}) => {
+const ChatThumb = ({name, toProfile, toChat}) => {
   return (
     <View
       style={{
@@ -15,7 +15,7 @@ const ChatThumb = ({name, onPress}) => {
         paddingBottom: 3,
       }}>
       <View style={{paddingHorizontal: 10}}>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={toProfile}>
           <Image
             source={photo}
             style={{width: 60, height: 60, borderRadius: 60 / 2}}
@@ -23,10 +23,12 @@ const ChatThumb = ({name, onPress}) => {
         </TouchableOpacity>
       </View>
       <View style={{flex: 1, paddingLeft: 5}}>
-        <Text style={{fontWeight: 'bold', fontSize: 15, paddingVertical: 5}}>
-          {name}
-        </Text>
-        <Text style={{flex: 1, alignItems: 'center'}}>Preview Chat</Text>
+        <TouchableOpacity onPress={toChat}>
+          <Text style={{fontWeight: 'bold', fontSize: 15, paddingVertical: 5}}>
+            {name}
+          </Text>
+          <Text style={{flex: 1, alignItems: 'center'}}>Preview Chat</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

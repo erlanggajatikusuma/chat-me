@@ -8,6 +8,7 @@ import Navbar from '../../organisms/Navbar';
 
 const Home = () => {
   const navigation = useNavigation();
+
   const [users, setUser] = useState([]);
 
   useEffect(() => {
@@ -34,23 +35,18 @@ const Home = () => {
                 <ChatThumb
                   key={user.id}
                   name={user.name}
-                  onPress={() => navigation.navigate('Profile')}
+                  toProfile={() => navigation.navigate('Profile')}
+                  toChat={() => navigation.navigate('Chats')}
                 />
               );
             })}
-            <Button title="Go to Details" onPress={() => navigation.navigate('Details')} />
           </>
-        ) : (
-          <View>
-            <Text>Empty</Text>
-          </View>
-        )}
+        ) : (<View><Text>Empty</Text></View>)}
       </ScrollView>
     </View>
   );
 };
 
 export default Home;
-// export default withNavigation(Home);
 
 const styles = StyleSheet.create({});
