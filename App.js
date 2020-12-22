@@ -1,8 +1,8 @@
 import React from 'react';
-import MainApp from './src/containers/pages/MainApp';
+import Router from './src/config/Router';
 
 const App = () => {
-  return <MainApp />;
+  return <Router />;
 };
 
 export default App;
