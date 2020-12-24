@@ -1,40 +1,54 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import { Chat, Home, Login, Profile, Register } from '../../containers/pages';
-// import Home from '../../containers/pages/Home';
-// import Profile from '../../containers/pages/Profile';
-// import Chat from '../../containers/pages/Chat';
+import {
+  Chat,
+  Home,
+  Login,
+  Main,
+  Profile,
+  Register,
+} from '../../containers/pages';
+import Loading from '../../components/atom/Loading';
 
+const MainScreen = () => {
+  return <Main />;
+};
+
+const LoadingScreen = () => {
+  return <Loading />;
+};
 
 const HomeScreen = () => {
   return <Home />;
 };
 
 const RegisterStack = () => {
-  return <Register />
-}
+  return <Register />;
+};
 const LoginStack = () => {
-  return <Login />
-}
+  return <Login />;
+};
 
 const ProfileStack = () => {
   return <Profile />;
 };
 
 const ChatStack = () => {
-  return <Chat />
-}
-
+  return <Chat />;
+};
 
 const Stack = createStackNavigator();
 
 const Router = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Loading"
+        screenOptions={{gestureEnabled: false}}>
+        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Register" component={RegisterStack} />
         <Stack.Screen name="Login" component={LoginStack} />
         <Stack.Screen

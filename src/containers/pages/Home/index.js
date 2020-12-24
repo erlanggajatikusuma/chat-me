@@ -1,6 +1,6 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View, Button} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
