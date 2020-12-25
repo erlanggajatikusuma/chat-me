@@ -8,7 +8,7 @@ const Loading = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      navigation.navigate(user ? 'Main' : 'Register');
+      navigation.navigate(user ? 'Home' : 'Login');
     });
   });
   return (

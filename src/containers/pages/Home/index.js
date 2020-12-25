@@ -41,7 +41,11 @@ const Home = () => {
               );
             })}
           </>
-        ) : (<View><Text>Empty</Text></View>)}
+        ) : (
+          <View>
+            <Text>Empty</Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

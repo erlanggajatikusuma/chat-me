@@ -2,8 +2,12 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import picture from '../../../assets/image/hachiman.jpg';
 import firebase from 'firebase';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Profile = () => {
+  const navigation = useNavigation();
+
   const addUser = async (name, email, uid, profileImg) => {
     try {
       return await firebase
@@ -18,6 +22,13 @@ const Profile = () => {
     } catch (error) {
       return error;
     }
+  };
+
+  const handleSignOut = () => {
+    firebase
+      .auth()
+      .signOut()
+      .then(() => navigation.navigate('Login'));
   };
 
   return (
@@ -49,6 +60,22 @@ const Profile = () => {
       <View style={{paddingLeft: 15, paddingTop: 34, backgroundColor: 'pink'}}>
         <Text style={{fontSize: 19, fontWeight: 'bold'}}>Account</Text>
         <Text>Location</Text>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={() => handleSignOut()}
+          style={{
+            borderWidth: 1,
+            borderColor: 'lightblue',
+            backgroundColor: 'blue',
+            borderRadius: 9,
+            marginHorizontal: 70,
+          }}>
+          <Text
+            style={{textAlign: 'center', paddingVertical: 10, color: 'white'}}>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

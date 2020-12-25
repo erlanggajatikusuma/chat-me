@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import firebase from 'firebase';
 // import {Store} from '../../../context/store';
 // import {LOADING_START, LOADING_STOP} from '../../../context/actions/type';
 
@@ -27,6 +28,11 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const handleLogin = () => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => navigation.navigate('Main'))
+      .catch((error) => setErrorMessage(error.message));
     console.log('handleLogin');
   };
 
@@ -63,7 +69,7 @@ const Login = () => {
         <View style={{paddingTop: 30}}>
           <Text style={{color: '#848484'}}>Email</Text>
           <TextInput
-            onChangeText={(email) => setEmail({email})}
+            onChangeText={(email) => setEmail(email)}
             value={email}
             // onChangeText={(text) => handleOnChange('email', text)}
             placeholder="Email"
@@ -77,7 +83,7 @@ const Login = () => {
         <View style={{paddingTop: 30, paddingBottom: 30}}>
           <Text style={{color: '#848484'}}>Password</Text>
           <TextInput
-            onChangeText={(password) => setPassword({password})}
+            onChangeText={(password) => setPassword(password)}
             value={password}
             // onChangeText={(text) => handleOnChange('password', text)}
             placeholder="Password"
