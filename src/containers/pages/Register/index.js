@@ -10,6 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 // import firebase from 'firebase';
 import firebase from '../../../firebase/config';
+import Loader from '../../../components/atom/Loader';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -21,10 +22,12 @@ const Register = () => {
   // });
 
   // const {email, password} = formData;
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
     firebase
@@ -90,59 +93,74 @@ const Register = () => {
 
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
-      <ScrollView>
-        <Text>Let's create your account!</Text>
-        {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
-        <View style={{paddingTop: 30}}>
-          <Text style={{color: '#848484'}}>Email</Text>
-          <TextInput
-            placeholder="Email"
-            onChangeText={(email) => setEmail(email)}
-            value={email}
-            // onChangeText={(text) => handleOnChange('email', text)}
-            style={{
-              borderRadius: 3,
-              borderBottomWidth: 1,
-              borderBottomColor: '#232323',
-            }}
-          />
-        </View>
-        <View style={{paddingTop: 30, paddingBottom: 30}}>
-          <Text style={{color: '#848484'}}>Password</Text>
-          <TextInput
-            placeholder="Password"
-            onChangeText={(password) => setPassword(password)}
-            value={password}
-            secureTextEntry={true}
-            // onChangeText={(text) => handleOnChange('password', text)}
-            style={{
-              borderRadius: 3,
-              borderBottomWidth: 1,
-              borderBottomColor: '#232323',
-            }}
-          />
-        </View>
+      {loading ? (
+        <Loader animating={loading} />
+      ) : (
+        <ScrollView>
+          <Text>Let's create your account!</Text>
+          {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
+          <View style={{paddingTop: 30}}>
+            <Text style={{color: '#848484'}}>Username</Text>
+            <TextInput
+              onChangeText={(username) => setUsername(username)}
+              value={username}
+              // onChangeText={(text) => handleOnChange('email', text)}
+              style={{
+                borderRadius: 3,
+                borderBottomWidth: 1,
+                borderBottomColor: '#232323',
+              }}
+            />
+          </View>
+          <View style={{paddingTop: 30}}>
+            <Text style={{color: '#848484'}}>Email Address</Text>
+            <TextInput
+              onChangeText={(email) => setEmail(email)}
+              value={email}
+              // onChangeText={(text) => handleOnChange('email', text)}
+              style={{
+                borderRadius: 3,
+                borderBottomWidth: 1,
+                borderBottomColor: '#232323',
+              }}
+            />
+          </View>
+          <View style={{paddingTop: 30, paddingBottom: 30}}>
+            <Text style={{color: '#848484'}}>Password</Text>
+            <TextInput
+              onChangeText={(password) => setPassword(password)}
+              value={password}
+              secureTextEntry={true}
+              // onChangeText={(text) => handleOnChange('password', text)}
+              style={{
+                borderRadius: 3,
+                borderBottomWidth: 1,
+                borderBottomColor: '#232323',
+              }}
+            />
+          </View>
 
-        <TouchableOpacity
-          //   onPress={() => navigation.navigate('Login')}
-          onPress={() => handleSignUp()}
-          style={{
-            backgroundColor: '#7E98DF',
-            paddingHorizontal: 12,
-            paddingVertical: 15,
-            borderRadius: 70,
-          }}>
-          <Text
+          <TouchableOpacity
+            //   onPress={() => navigation.navigate('Login')}
+            onPress={() => handleSignUp()}
             style={{
-              textAlign: 'center',
-              fontSize: 14,
-              fontWeight: 'bold',
-              color: '#FFF',
+              backgroundColor: '#7E98DF',
+              paddingHorizontal: 12,
+              paddingVertical: 15,
+              borderRadius: 70,
             }}>
-            REGISTER
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 14,
+                fontWeight: 'bold',
+                color: '#FFF',
+              }}>
+              REGISTER
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </View>
   );
 };

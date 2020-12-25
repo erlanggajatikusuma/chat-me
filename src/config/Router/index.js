@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
   Chat,
+  ForgotPassword,
   Home,
   Login,
   Main,
@@ -27,8 +28,13 @@ const HomeScreen = () => {
 const RegisterStack = () => {
   return <Register />;
 };
+
 const LoginStack = () => {
   return <Login />;
+};
+
+const ForgotStack = () => {
+  return <ForgotPassword />;
 };
 
 const ProfileStack = () => {
@@ -50,7 +56,12 @@ const Router = () => {
         <Stack.Screen name="Main" component={MainScreen} />
         <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Register" component={RegisterStack} />
-        <Stack.Screen name="Login" component={LoginStack} />
+        <Stack.Screen
+          name="Login"
+          component={LoginStack}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="Forgot" component={ForgotStack} />
         <Stack.Screen
           name="Home"
           options={{headerShown: false}}

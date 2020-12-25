@@ -1,9 +1,8 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import picture from '../../../assets/image/hachiman.jpg';
 import firebase from 'firebase';
 import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const Profile = () => {
   const navigation = useNavigation();
