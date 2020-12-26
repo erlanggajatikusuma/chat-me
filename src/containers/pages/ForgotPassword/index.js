@@ -8,55 +8,74 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import firebase from 'firebase';
+import {useNavigation} from '@react-navigation/native';
+import Loader from '../../../components/atom/Loader';
 
 const ForgotPassword = () => {
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleForgot = () => {
-    firebase.auth().ForgotPassword();
+    setTimeout(() => {
+      const auth = firebase.auth();
+      auth
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          navigation.navigate('Login');
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+        });
+    }, 2000);
+    setLoading(true);
   };
 
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
-      <ScrollView>
-        <Text>You'll get messages soon on your e-mail</Text>
-        {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
-        <View style={{paddingTop: 30}}>
-          <Text style={{color: '#848484'}}>Email</Text>
-          <TextInput
-            onChangeText={(email) => setEmail(email)}
-            value={email}
-            // onChangeText={(text) => handleOnChange('email', text)}
-            placeholder="Email"
-            style={{
-              borderRadius: 3,
-              borderBottomWidth: 1,
-              borderBottomColor: '#232323',
-            }}
-          />
-        </View>
+      {loading ? (
+        <Loader animating={loading} />
+      ) : (
+        <ScrollView>
+          <Text>You'll get messages soon on your e-mail</Text>
+          {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
+          <View style={{paddingTop: 30}}>
+            <Text style={{color: '#848484'}}>Email</Text>
+            <TextInput
+              onChangeText={(email) => setEmail(email)}
+              value={email}
+              // onChangeText={(text) => handleOnChange('email', text)}
+              style={{
+                borderRadius: 3,
+                borderBottomWidth: 1,
+                borderBottomColor: '#232323',
+              }}
+            />
+          </View>
 
-        <TouchableOpacity
-          //   onPress={() => handleLogin()}
-          style={{
-            backgroundColor: '#7E98DF',
-            paddingHorizontal: 12,
-            paddingVertical: 15,
-            borderRadius: 70,
-            marginTop: 35,
-          }}>
-          <Text
+          <TouchableOpacity
+            onPress={() => handleForgot()}
             style={{
-              textAlign: 'center',
-              fontSize: 14,
-              fontWeight: 'bold',
-              color: '#FFF',
+              backgroundColor: '#7E98DF',
+              paddingHorizontal: 12,
+              paddingVertical: 15,
+              borderRadius: 70,
+              marginTop: 35,
             }}>
-            SEND
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 14,
+                fontWeight: 'bold',
+                color: '#FFF',
+              }}>
+              SEND
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </View>
   );
 };

@@ -1,11 +1,44 @@
-import React from 'react';
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Button,
+} from 'react-native';
 import picture from '../../../assets/image/hachiman.jpg';
-import firebase from 'firebase';
+import firebase from '../../../config/firebase/config';
 import {useNavigation} from '@react-navigation/native';
 
 const Profile = () => {
   const navigation = useNavigation();
+
+  const [uuid, setUuid] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [user, setUser] = useState({});
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    getData();
+  });
+
+  const getData = () => {
+    const dataa = firebase.auth().currentUser;
+    const uid = dataa.uid;
+    const email = dataa.email;
+    const name = dataa.displayName;
+    const photo = dataa.photoURL;
+    const phone = dataa.phoneNumber;
+    setData(dataa);
+    setUuid(uid);
+    setEmail(email);
+  };
+
+  // const dataUser = () => {
+  //   firebase.auth().currentUser()
+  // }
 
   const addUser = async (name, email, uid, profileImg) => {
     try {
@@ -22,6 +55,11 @@ const Profile = () => {
       return error;
     }
   };
+
+  // const getUser = async () => {
+  //   const user = firebase.auth().currentUser;
+  //   setUser(user);
+  // };
 
   const handleSignOut = () => {
     firebase
@@ -53,13 +91,18 @@ const Profile = () => {
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>
             Hachiman Hikigaya
           </Text>
-          <Text>hachiman@gmail.com</Text>
+          <Text>{email}</Text>
         </View>
       </View>
       <View style={{paddingLeft: 15, paddingTop: 34, backgroundColor: 'pink'}}>
         <Text style={{fontSize: 19, fontWeight: 'bold'}}>Account</Text>
         <Text>Location</Text>
       </View>
+
+      <View>
+        <Button title="Try" onPress={() => console.log(data)} />
+      </View>
+      <View />
       <View>
         <TouchableOpacity
           onPress={() => handleSignOut()}

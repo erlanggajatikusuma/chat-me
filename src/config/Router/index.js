@@ -7,18 +7,18 @@ import {
   ForgotPassword,
   Home,
   Login,
-  Main,
+  // Main,
   Profile,
   Register,
 } from '../../containers/pages';
-import Loading from '../../components/atom/Loading';
+import SplashScreen from '../../containers/pages/Splash';
 
-const MainScreen = () => {
-  return <Main />;
-};
+// const MainScreen = () => {
+//   return <Main />;
+// };
 
-const LoadingScreen = () => {
-  return <Loading />;
+const SplashStack = () => {
+  return <SplashScreen />;
 };
 
 const HomeScreen = () => {
@@ -51,17 +51,24 @@ const Router = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Loading"
+        initialRouteName="Splash"
         screenOptions={{gestureEnabled: false}}>
-        <Stack.Screen name="Main" component={MainScreen} />
-        <Stack.Screen name="Loading" component={LoadingScreen} />
+        <Stack.Screen
+          name="Splash"
+          component={SplashStack}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Register" component={RegisterStack} />
         <Stack.Screen
           name="Login"
           component={LoginStack}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Forgot" component={ForgotStack} />
+        <Stack.Screen
+          name="Forgot"
+          component={ForgotStack}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Home"
           options={{headerShown: false}}

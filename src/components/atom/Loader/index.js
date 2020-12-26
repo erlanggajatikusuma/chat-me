@@ -1,21 +1,8 @@
 import React from 'react';
 import {ActivityIndicator, Dimensions, StyleSheet, View} from 'react-native';
-// import {Store} from '../../../context/store';
 
 const {width, height} = Dimensions.get('window');
 
-// const Loader = () => {
-//   const globalState = useContext(Store);
-//   const {mapLoaderState} = globalState;
-//   const {loading} = mapLoaderState;
-//   return loading ? (
-//     <View style={styles.loadContainer}>
-//       <View style={styles.indicator}>
-//         <ActivityIndicator size="large" animating={loading} color="white" />
-//       </View>
-//     </View>
-//   ) : null;
-// };
 const Loader = ({animating}) => {
   return (
     <View style={styles.loadContainer}>

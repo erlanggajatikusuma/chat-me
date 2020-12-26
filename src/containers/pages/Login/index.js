@@ -6,13 +6,10 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import firebase from 'firebase';
 import Loader from '../../../components/atom/Loader';
-
-const {width, height} = Dimensions.get('window');
 
 // import {Store} from '../../../context/store';
 // import {LOADING_START, LOADING_STOP} from '../../../context/actions/type';
@@ -33,32 +30,50 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => navigation.navigate('Main'))
-      .catch((error) => setErrorMessage(error.message));
-    console.log('handleLogin');
+  const handleLoading = async () => {
+    setTimeout(() => {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((res) => {
+          navigation.navigate('Home');
+        })
+        .catch((error) => {
+          setErrorMessage(error.message);
+          setLoading(false);
+        });
+      console.log('handleLogin');
+    });
+    setLoading(true);
   };
 
-  const onLogin = () => {
-    if (!email) {
-      alert('Email is required');
-    } else if (!password) {
-      alert('Password is required');
-    } else {
-      alert(JSON.stringify(formData));
-      // dispatchLoaderAction({
-      //   type: LOADING_START,
-      // });
-      // setTimeout(() => {
-      //   dispatchLoaderAction({
-      //     type: LOADING_STOP,
-      //   });
-      // }, 2000);
-    }
+  const handleLogin = () => {
+    handleLoading();
+    // firebase
+    //   .auth()
+    //   .signInWithEmailAndPassword(email, password)
+    //   .then(() => navigation.navigate('Main'))
+    //   .catch((error) => setErrorMessage(error.message));
+    // console.log('handleLogin');
   };
+
+  // const onLogin = () => {
+  //   if (!email) {
+  //     alert('Email is required');
+  //   } else if (!password) {
+  //     alert('Password is required');
+  //   } else {
+  //     alert(JSON.stringify(formData));
+  //     dispatchLoaderAction({
+  //       type: LOADING_START,
+  //     });
+  //     setTimeout(() => {
+  //       dispatchLoaderAction({
+  //         type: LOADING_STOP,
+  //       });
+  //     }, 2000);
+  //   }
+  // };
 
   // const handleOnChange = (name, value) => {
   //   setFormData({
@@ -70,7 +85,6 @@ const Login = () => {
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
       {loading ? (
-        // <Loader />
         <Loader animating={loading} />
       ) : (
         <ScrollView>

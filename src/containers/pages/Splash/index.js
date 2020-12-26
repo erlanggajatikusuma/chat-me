@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
 import firebase from 'firebase';
 import {useNavigation} from '@react-navigation/native';
+import SplashImg from '../../../assets/image/SplashImg.png';
 
-const Loading = () => {
+const SplashScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -13,19 +14,21 @@ const Loading = () => {
   });
   return (
     <View style={styles.container}>
-      <Text>Loading</Text>
-      <ActivityIndicator size="large" color="white" />
+      <Image style={styles.image} source={SplashImg} />
     </View>
   );
 };
 
-export default Loading;
+export default SplashScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'grey',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
   },
 });

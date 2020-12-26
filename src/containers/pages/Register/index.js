@@ -8,8 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-// import firebase from 'firebase';
-import firebase from '../../../firebase/config';
+import firebase from '../../../config/firebase/config';
 import Loader from '../../../components/atom/Loader';
 
 const Register = () => {
@@ -22,7 +21,7 @@ const Register = () => {
   // });
 
   // const {email, password} = formData;
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
@@ -30,12 +29,18 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => navigation.navigate('Main'))
-      .catch((error) => setErrorMessage({errorMessage: error.message}));
-    console.log('handleSignUp');
+    setTimeout(() => {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(() => navigation.navigate('Login'))
+        .catch((error) => {
+          setErrorMessage(error.message);
+          setLoading(false);
+        });
+      console.log('handleSignUp');
+    });
+    setLoading(true);
   };
 
   // errorMessage = async (error) => {
@@ -99,7 +104,7 @@ const Register = () => {
         <ScrollView>
           <Text>Let's create your account!</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
-          <View style={{paddingTop: 30}}>
+          {/* <View style={{paddingTop: 30}}>
             <Text style={{color: '#848484'}}>Username</Text>
             <TextInput
               onChangeText={(username) => setUsername(username)}
@@ -111,12 +116,13 @@ const Register = () => {
                 borderBottomColor: '#232323',
               }}
             />
-          </View>
+          </View> */}
           <View style={{paddingTop: 30}}>
             <Text style={{color: '#848484'}}>Email Address</Text>
             <TextInput
               onChangeText={(email) => setEmail(email)}
               value={email}
+              autoCapitalize="none"
               // onChangeText={(text) => handleOnChange('email', text)}
               style={{
                 borderRadius: 3,
@@ -159,6 +165,20 @@ const Register = () => {
               REGISTER
             </Text>
           </TouchableOpacity>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingTop: 35,
+            }}>
+            <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>
+              Already have an account?
+            </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={{color: '#7E98DF', fontSize: 14}}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       )}
     </View>
