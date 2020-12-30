@@ -102,6 +102,17 @@ const Register = () => {
         <Loader animating={loading} />
       ) : (
         <ScrollView>
+          <View style={{paddingTop: 75, paddingBottom: 35}}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: '500',
+                textAlign: 'center',
+                color: '#7E98DF',
+              }}>
+              Register
+            </Text>
+          </View>
           <Text>Let's create your account!</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
           {/* <View style={{paddingTop: 30}}>
@@ -171,6 +182,7 @@ const Register = () => {
               flexDirection: 'row',
               justifyContent: 'center',
               paddingTop: 35,
+              paddingBottom: 35,
             }}>
             <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>
               Already have an account?

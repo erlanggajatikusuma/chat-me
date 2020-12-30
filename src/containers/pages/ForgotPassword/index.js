@@ -39,6 +39,17 @@ const ForgotPassword = () => {
         <Loader animating={loading} />
       ) : (
         <ScrollView>
+          <View style={{paddingTop: 75, paddingBottom: 35}}>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: '500',
+                textAlign: 'center',
+                color: '#7E98DF',
+              }}>
+              Forgot Password
+            </Text>
+          </View>
           <Text>You'll get messages soon on your e-mail</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
           <View style={{paddingTop: 30}}>

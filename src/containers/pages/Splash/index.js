@@ -8,9 +8,17 @@ const SplashScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      navigation.navigate(user ? 'Home' : 'Login');
-    });
+    setTimeout(() => {
+      firebase.auth().onAuthStateChanged((user) => {
+        navigation.navigate(user ? 'Home' : 'Login');
+      });
+    }, 2000);
+    // const auth = firebase.auth().currentUser;
+    // if (auth !== '') {
+    //   navigation.navigate('Home');
+    // } else {
+    //   navigation.navigate('Edit');
+    // }
   });
   return (
     <View style={styles.container}>
