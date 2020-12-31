@@ -35,8 +35,7 @@ const Home = () => {
                 <ChatThumb
                   key={user.id}
                   name={user.name}
-                  toProfile={() => navigation.navigate('Profil')}
-                  // toProfile={() => navigation.navigate('Edit')}
+                  toProfile={() => navigation.navigate('Profile')}
                   toChat={() => navigation.navigate('Chats')}
                 />
               );

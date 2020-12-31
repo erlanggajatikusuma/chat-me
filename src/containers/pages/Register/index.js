@@ -14,18 +14,9 @@ import Loader from '../../../components/atom/Loader';
 const Register = () => {
   const navigation = useNavigation();
 
-  // const [formData, setFormData] = useState({
-  //   email: '',
-  //   password: '',
-  //   isLoading: false,
-  // });
-
-  // const {email, password} = formData;
-  // const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
-
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = () => {
@@ -33,7 +24,7 @@ const Register = () => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => navigation.navigate('Login'))
+        .then(() => navigation.navigate('Profil'))
         .catch((error) => {
           setErrorMessage(error.message);
           setLoading(false);
@@ -42,59 +33,6 @@ const Register = () => {
     });
     setLoading(true);
   };
-
-  // errorMessage = async (error) => {
-  //   await setErrorMessage({
-  //     errorMessage: error.message,
-  //   });
-  //   setErrorMessage({
-  //     errorMessage: null,
-  //     isLoading: false,
-  //   });
-  // };
-
-  // const onSignUp = () => {
-  // if (!name) {
-  //   alert('Name is required');
-  // }
-  // if (!email) {
-  //   alert('Email is required');
-  // } else if (!password) {
-  //   alert.apply('Password is required');
-  // } else {
-  //   alert(JSON.stringify(formData));
-  // }
-  // setTimeout(() => {
-  //   firebase
-  //     .auth()
-  //     .createUserWithEmailAndPassword(email, password)
-  //     .then(() => navigation.navigate('Login'))
-  //     .catch((error) => errorMessage(error));
-  // }, 2000);
-  // setFormData({
-  //   ...formData,
-  //   isLoading: true,
-  // });
-  // };
-
-  // const hanldeSignUp = () => {
-  //   setTimeout(() => {
-  //     Firebase.auth()
-  //       .createUserWithEmailAndPassword(email, password)
-  //       .then(() => navigation.navigate('Profile'))
-  //       .catch((error) => errorMessage(error));
-  //   }, 2000);
-  //   setErrorMessage({
-  //     isLoading: true,
-  //   });
-  // };
-
-  // const handleOnChange = (name, value) => {
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value,
-  //   });
-  // };
 
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
@@ -115,23 +53,10 @@ const Register = () => {
           </View>
           <Text>Let's create your account!</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
-          {/* <View style={{paddingTop: 30}}>
-            <Text style={{color: '#848484'}}>Username</Text>
-            <TextInput
-              onChangeText={(username) => setUsername(username)}
-              value={username}
-              // onChangeText={(text) => handleOnChange('email', text)}
-              style={{
-                borderRadius: 3,
-                borderBottomWidth: 1,
-                borderBottomColor: '#232323',
-              }}
-            />
-          </View> */}
           <View style={{paddingTop: 30}}>
             <Text style={{color: '#848484'}}>Email Address</Text>
             <TextInput
-              onChangeText={(email) => setEmail(email)}
+              onChangeText={(text) => setEmail(text)}
               value={email}
               autoCapitalize="none"
               // onChangeText={(text) => handleOnChange('email', text)}
@@ -145,7 +70,7 @@ const Register = () => {
           <View style={{paddingTop: 30, paddingBottom: 30}}>
             <Text style={{color: '#848484'}}>Password</Text>
             <TextInput
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(text) => setPassword(text)}
               value={password}
               secureTextEntry={true}
               // onChangeText={(text) => handleOnChange('password', text)}

@@ -5,7 +5,8 @@ import Profile from './Profile';
 import Register from './Register';
 import ForgotPassword from './ForgotPassword';
 import EditProfile from './EditProfile';
-import Profil from './Profil';
+import SplashScreen from './Splash';
+import Loading from './Loading';
 
 export {
   Chat,
@@ -15,5 +16,6 @@ export {
   Register,
   ForgotPassword,
   EditProfile,
-  Profil,
+  SplashScreen,
+  Loading,
 };

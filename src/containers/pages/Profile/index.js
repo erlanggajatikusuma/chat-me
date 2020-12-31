@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  ToastAndroid,
 } from 'react-native';
 import picture from '../../../assets/image/hachiman.jpg';
 import SettingImg from '../../../assets/icon/Settings.svg';
@@ -16,26 +17,31 @@ import {useNavigation} from '@react-navigation/native';
 const Profile = () => {
   const navigation = useNavigation();
 
-  const [uuid, setUuid] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [data, setData] = useState(null);
+  const [dob, setDob] = useState('');
   const [status, setStatus] = useState('Offline');
+  const [specificData, setSpecificData] = useState({});
 
   useEffect(() => {
     getData();
-  });
+  }, []);
 
-  const getData = async () => {
+  const getData = () => {
     const uid = firebase.auth().currentUser.uid;
     const user = firebase.database().ref(`users/${uid}`);
     console.log(user);
-    await user.on('value', (snapshot) => {
+    user.on('value', (snapshot) => {
       console.log('user snapshot:', snapshot.val());
-      const specificData = snapshot.val();
-      setName(specificData.displayName);
-      setEmail(specificData.email);
-      setStatus(specificData.status);
+      setSpecificData(snapshot.val());
+      setName(snapshot.val() !== null ? snapshot.val().username : '');
+      setEmail(snapshot.val() !== null ? snapshot.val().email : '');
+      setStatus(snapshot.val() !== null ? snapshot.val().status : '');
+      setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
+      // setName(specificData.username);
+      // setEmail(specificData.email);
+      // setStatus(specificData.status);
+      // setDob(specificData.dateOfBirth);
     });
   };
 
@@ -72,6 +78,7 @@ const Profile = () => {
             {/* Hachiman Hikigaya */}
           </Text>
           <Text>{email}</Text>
+          <Text>{dob}</Text>
           <Text>{status}</Text>
         </View>
       </View>

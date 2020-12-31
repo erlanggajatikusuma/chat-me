@@ -7,19 +7,40 @@ import {
   EditProfile,
   ForgotPassword,
   Home,
+  Loading,
   Login,
-  Profil,
   Profile,
   Register,
+  SplashScreen,
 } from '../../containers/pages';
-import SplashScreen from '../../containers/pages/Splash';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+// import {createDrawerNavigator} from '@react-navigation/drawer';
+// const Drawer = createDrawerNavigator();
 
-const SplashStack = () => {
-  return <SplashScreen />;
-};
+const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function HomeTab() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Edit" component={EditStack} />
+    </Tab.Navigator>
+  );
+}
 
 const HomeScreen = () => {
   return <Home />;
+};
+const EditStack = () => {
+  return <EditProfile />;
+};
+
+const LoadingStack = () => {
+  return <Loading />;
+};
+const SplashStack = () => {
+  return <SplashScreen />;
 };
 
 const RegisterStack = () => {
@@ -34,22 +55,13 @@ const ForgotStack = () => {
   return <ForgotPassword />;
 };
 
-const EditStack = () => {
-  return <EditProfile />;
-};
-
 const ProfileStack = () => {
   return <Profile />;
-};
-const ProfilStack = () => {
-  return <Profil />;
 };
 
 const ChatStack = () => {
   return <Chat />;
 };
-
-const Stack = createStackNavigator();
 
 const Router = () => {
   return (
@@ -80,16 +92,11 @@ const Router = () => {
         <Stack.Screen
           name="Home"
           options={{headerShown: false}}
-          component={HomeScreen}
+          component={HomeTab}
         />
         <Stack.Screen name="Profile" component={ProfileStack} />
-        <Stack.Screen
-          name="Profil"
-          component={ProfilStack}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Edit" component={EditStack} />
         <Stack.Screen name="Chats" component={ChatStack} />
+        <Stack.Screen name="Loading" component={LoadingStack} />
       </Stack.Navigator>
     </NavigationContainer>
   );

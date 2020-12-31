@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import firebase from 'firebase';
 import {useNavigation} from '@react-navigation/native';
 import SplashImg from '../../../assets/image/SplashImg.png';
 
@@ -9,17 +8,9 @@ const SplashScreen = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      firebase.auth().onAuthStateChanged((user) => {
-        navigation.navigate(user ? 'Home' : 'Login');
-      });
+      navigation.navigate('Loading');
     }, 2000);
-    // const auth = firebase.auth().currentUser;
-    // if (auth !== '') {
-    //   navigation.navigate('Home');
-    // } else {
-    //   navigation.navigate('Edit');
-    // }
-  });
+  }, []);
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={SplashImg} />

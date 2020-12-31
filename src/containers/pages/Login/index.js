@@ -43,7 +43,7 @@ const Login = () => {
           setLoading(false);
         });
       console.log('handleLogin');
-    });
+    }, 2000);
     setLoading(true);
   };
 
