@@ -19,12 +19,12 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     setTimeout(() => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => navigation.navigate('Profil'))
+        .then(() => navigation.navigate('Profile'))
         .catch((error) => {
           setErrorMessage(error.message);
           setLoading(false);
@@ -41,15 +41,7 @@ const Register = () => {
       ) : (
         <ScrollView>
           <View style={{paddingTop: 75, paddingBottom: 35}}>
-            <Text
-              style={{
-                fontSize: 22,
-                fontWeight: '500',
-                textAlign: 'center',
-                color: '#7E98DF',
-              }}>
-              Register
-            </Text>
+            <Text style={styles.registerText}>Register</Text>
           </View>
           <Text>Let's create your account!</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
@@ -59,12 +51,7 @@ const Register = () => {
               onChangeText={(text) => setEmail(text)}
               value={email}
               autoCapitalize="none"
-              // onChangeText={(text) => handleOnChange('email', text)}
-              style={{
-                borderRadius: 3,
-                borderBottomWidth: 1,
-                borderBottomColor: '#232323',
-              }}
+              style={styles.inputText}
             />
           </View>
           <View style={{paddingTop: 30, paddingBottom: 30}}>
@@ -73,42 +60,14 @@ const Register = () => {
               onChangeText={(text) => setPassword(text)}
               value={password}
               secureTextEntry={true}
-              // onChangeText={(text) => handleOnChange('password', text)}
-              style={{
-                borderRadius: 3,
-                borderBottomWidth: 1,
-                borderBottomColor: '#232323',
-              }}
+              style={styles.inputText}
             />
           </View>
 
-          <TouchableOpacity
-            //   onPress={() => navigation.navigate('Login')}
-            onPress={() => handleSignUp()}
-            style={{
-              backgroundColor: '#7E98DF',
-              paddingHorizontal: 12,
-              paddingVertical: 15,
-              borderRadius: 70,
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 14,
-                fontWeight: 'bold',
-                color: '#FFF',
-              }}>
-              REGISTER
-            </Text>
+          <TouchableOpacity onPress={handleSignUp} style={styles.registerBtn}>
+            <Text style={styles.registerTextBtn}>REGISTER</Text>
           </TouchableOpacity>
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              paddingTop: 35,
-              paddingBottom: 35,
-            }}>
+          <View style={styles.haveAccount}>
             <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>
               Already have an account?
             </Text>
@@ -124,4 +83,35 @@ const Register = () => {
 
 export default Register;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  registerText: {
+    fontSize: 22,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#7E98DF',
+  },
+  inputText: {
+    borderRadius: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: '#232323',
+  },
+  registerBtn: {
+    backgroundColor: '#7E98DF',
+    paddingHorizontal: 12,
+    paddingVertical: 15,
+    borderRadius: 70,
+  },
+  registerTextBtn: {
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  haveAccount: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 35,
+    paddingBottom: 35,
+  },
+});

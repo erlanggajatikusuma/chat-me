@@ -24,7 +24,7 @@ function HomeTab() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Edit" component={EditStack} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
@@ -34,6 +34,9 @@ const HomeScreen = () => {
 };
 const EditStack = () => {
   return <EditProfile />;
+};
+const ProfileStack = () => {
+  return <Profile />;
 };
 
 const LoadingStack = () => {
@@ -53,10 +56,6 @@ const LoginStack = () => {
 
 const ForgotStack = () => {
   return <ForgotPassword />;
-};
-
-const ProfileStack = () => {
-  return <Profile />;
 };
 
 const ChatStack = () => {
@@ -94,9 +93,18 @@ const Router = () => {
           options={{headerShown: false}}
           component={HomeTab}
         />
-        <Stack.Screen name="Profile" component={ProfileStack} />
+        <Stack.Screen
+          name="Edit"
+          options={{headerShown: false}}
+          component={EditStack}
+        />
+        <Stack.Screen name="Display" component={ProfileStack} />
         <Stack.Screen name="Chats" component={ChatStack} />
-        <Stack.Screen name="Loading" component={LoadingStack} />
+        <Stack.Screen
+          name="Loading"
+          component={LoadingStack}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

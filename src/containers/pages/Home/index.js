@@ -1,7 +1,8 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import firebase from 'firebase';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
 import Navbar from '../../organisms/Navbar';
@@ -9,18 +10,46 @@ import Navbar from '../../organisms/Navbar';
 const Home = () => {
   const navigation = useNavigation();
 
-  const [users, setUser] = useState([]);
+  const [currentUser, setCurrentUser] = useState({
+    id: '',
+    username: '',
+    photo: '',
+  });
+  const [allUser, setAllUser] = useState([]);
 
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   const getData = () => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((json) => {
-        // console.log(json);
-        setUser(json);
+    const uuid = firebase.auth().currentUser.uid;
+    firebase
+      .database()
+      .ref('users')
+      .on('value', (dataSnapshot) => {
+        let users = [];
+        let current = {
+          id: '',
+          username: '',
+          photo: '',
+        };
+        // console.log('Data user: ', dataSnapshot.val());
+        dataSnapshot.forEach((data) => {
+          if (uuid === data.val().uid) {
+            current.id = uuid;
+            current.username = data.val().username;
+            current.photo = data.val().photo;
+          } else {
+            users.push({
+              id: data.val().uid,
+              username: data.val().username,
+              photo: data.val().photo,
+              status: data.val().status,
+            });
+          }
+        });
+        setCurrentUser(current);
+        setAllUser(users);
       });
   };
   return (
@@ -28,16 +57,24 @@ const Home = () => {
       <ScrollView>
         <SearchBar />
         <Navbar />
-        {users.length > 0 ? (
+        {allUser.length > 0 ? (
           <>
-            {users.map((user) => {
+            {allUser.map((allUs) => {
               return (
-                <ChatThumb
-                  key={user.id}
-                  name={user.name}
-                  toProfile={() => navigation.navigate('Profile')}
-                  toChat={() => navigation.navigate('Chats')}
-                />
+                <>
+                  <ChatThumb
+                    key={allUs.uid}
+                    name={allUs.username}
+                    img={allUs.photo}
+                    status={allUs.status}
+                    // toProfile={() => navigation.navigate('Display')}
+                    toChat={() => navigation.navigate('Chats')}
+                  />
+                  {/* <Button
+                    title="Try"
+                    onPress={() => console.log(currentUser)}
+                  /> */}
+                </>
               );
             })}
           </>

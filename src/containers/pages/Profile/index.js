@@ -27,30 +27,49 @@ const Profile = () => {
     getData();
   }, []);
 
+  // const getData = async () => {
+  //   const uid = firebase.auth().currentUser.uid;
+  //   const user = firebase.database().ref(`users/${uid}`);
+  //   console.log(user);
+  //   user.on('value', (snapshot) => {
+  //     console.log('user snapshot:', snapshot.val());
+  //     setSpecificData(snapshot.val());
+  //     setName(snapshot.val() !== null ? snapshot.val().username : '');
+  //     setEmail(snapshot.val() !== null ? snapshot.val().email : '');
+  //     setStatus(snapshot.val() !== null ? snapshot.val().status : '');
+  //     setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
+  //   });
+  // };
+
   const getData = () => {
     const uid = firebase.auth().currentUser.uid;
     const user = firebase.database().ref(`users/${uid}`);
-    console.log(user);
     user.on('value', (snapshot) => {
-      console.log('user snapshot:', snapshot.val());
+      // console.log('data snapshot: ', snapshot.val());
+      if (snapshot.val() === null) {
+        navigation.navigate('Edit');
+      }
       setSpecificData(snapshot.val());
       setName(snapshot.val() !== null ? snapshot.val().username : '');
       setEmail(snapshot.val() !== null ? snapshot.val().email : '');
       setStatus(snapshot.val() !== null ? snapshot.val().status : '');
       setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
-      // setName(specificData.username);
-      // setEmail(specificData.email);
-      // setStatus(specificData.status);
-      // setDob(specificData.dateOfBirth);
     });
+    // user.on('value', (snapshot) => {
+    //   console.log('user snapshot:', snapshot.val());
+    //   setSpecificData(snapshot.val());
+    //   setName(snapshot.val() !== null ? snapshot.val().username : '');
+    //   setEmail(snapshot.val() !== null ? snapshot.val().email : '');
+    //   setStatus(snapshot.val() !== null ? snapshot.val().status : '');
+    //   setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
+    // });
   };
 
   const handleSignOut = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => navigation.navigate('Login'))
-      .catch((error) => console.log(error));
+    const uid = firebase.auth().currentUser.uid;
+    firebase.database().ref(`/users/${uid}`).update({status: 'Offline'});
+    firebase.auth().signOut();
+    navigation.navigate('Login');
   };
 
   return (
@@ -88,10 +107,6 @@ const Profile = () => {
       </View>
       <View>
         <SettingImg width={25} height={25} />
-      </View>
-
-      <View>
-        <Button title="Try" onPress={() => console.log(data)} />
       </View>
       <View />
       <View>
