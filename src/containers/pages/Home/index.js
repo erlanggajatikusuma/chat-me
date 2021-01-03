@@ -1,13 +1,20 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
 import firebase from 'firebase';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
 
 const Home = ({navigation}) => {
-  // const navigation = useNavigation();
+  const updateStatus = () => {
+    const uid = firebase.auth().currentUser.uid;
+    const ref = firebase.database().ref(`/users/${uid}`);
+    ref.update({
+      uid,
+      status: 'Online',
+      date: new Date().getTime(),
+    });
+  };
 
   const [currentUser, setCurrentUser] = useState({
     id: '',
@@ -15,10 +22,6 @@ const Home = ({navigation}) => {
     photo: '',
   });
   const [allUser, setAllUser] = useState([]);
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const getData = () => {
     const uuid = firebase.auth().currentUser.uid;
@@ -59,9 +62,17 @@ const Home = ({navigation}) => {
     const status = allUs.status;
     console.log(allUs);
     navigation.navigate('Chats', {
-      name: 'Albion',
+      name,
+      photo,
+      status,
     });
   };
+
+  useEffect(() => {
+    getData();
+    updateStatus();
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <ScrollView>

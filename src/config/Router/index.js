@@ -59,8 +59,8 @@ const ForgotStack = () => {
   return <ForgotPassword />;
 };
 
-const ChatStack = () => {
-  return <Chat />;
+const ChatStack = (props) => {
+  return <Chat navigation={props.navigation} />;
 };
 
 const Router = () => {
@@ -101,7 +101,11 @@ const Router = () => {
           component={EditStack}
         />
         <Stack.Screen name="Display" component={ProfileStack} />
-        <Stack.Screen name="Chats" component={ChatStack} />
+        <Stack.Screen
+          name="Chats"
+          component={ChatStack}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Loading"
           component={LoadingStack}
