@@ -14,6 +14,7 @@ import {
   SplashScreen,
 } from '../../containers/pages';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import {Button, View} from 'react-native';
 // import {createDrawerNavigator} from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
 
@@ -29,8 +30,8 @@ function HomeTab() {
   );
 }
 
-const HomeScreen = () => {
-  return <Home />;
+const HomeScreen = (props) => {
+  return <Home navigation={props.navigation} />;
 };
 const EditStack = () => {
   return <EditProfile />;
@@ -67,7 +68,8 @@ const Router = () => {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Splash"
-        screenOptions={{gestureEnabled: false}}>
+        // screenOptions={{gestureEnabled: false}}
+      >
         <Stack.Screen
           name="Splash"
           component={SplashStack}

@@ -1,14 +1,13 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 import firebase from 'firebase';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
-import Navbar from '../../organisms/Navbar';
 
-const Home = () => {
-  const navigation = useNavigation();
+const Home = ({navigation}) => {
+  // const navigation = useNavigation();
 
   const [currentUser, setCurrentUser] = useState({
     id: '',
@@ -52,28 +51,36 @@ const Home = () => {
         setAllUser(users);
       });
   };
+
+  const toChat = async (allUs) => {
+    const id = allUs.id;
+    const name = allUs.username;
+    const photo = allUs.photo;
+    const status = allUs.status;
+    console.log(allUs);
+    navigation.navigate('Chats', {
+      name: 'Albion',
+    });
+  };
   return (
     <View style={{flex: 1}}>
       <ScrollView>
         <SearchBar />
-        <Navbar />
         {allUser.length > 0 ? (
           <>
             {allUser.map((allUs) => {
               return (
                 <>
                   <ChatThumb
-                    key={allUs.uid}
+                    key={allUs.id}
                     name={allUs.username}
                     img={allUs.photo}
                     status={allUs.status}
                     // toProfile={() => navigation.navigate('Display')}
-                    toChat={() => navigation.navigate('Chats')}
+                    // toChat={() => navigation.navigate('Chats')}
+                    toChat={() => toChat(allUs)}
                   />
-                  {/* <Button
-                    title="Try"
-                    onPress={() => console.log(currentUser)}
-                  /> */}
+                  {/* <Button title="Try" onPress={() => console.log(allUser)} /> */}
                 </>
               );
             })}
