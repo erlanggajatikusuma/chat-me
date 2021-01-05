@@ -6,6 +6,7 @@ import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
 
 const Home = ({navigation}) => {
+  const userId = firebase.auth().currentUser.uid;
   const updateStatus = () => {
     const uid = firebase.auth().currentUser.uid;
     const ref = firebase.database().ref(`/users/${uid}`);
@@ -62,9 +63,13 @@ const Home = ({navigation}) => {
     const status = allUs.status;
     console.log(allUs);
     navigation.navigate('Chats', {
+      id,
       name,
       photo,
       status,
+      userId: userId,
+      username: currentUser.username,
+      userPhoto: currentUser.photo,
     });
   };
 
