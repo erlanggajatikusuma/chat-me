@@ -20,7 +20,7 @@ const Home = ({navigation}) => {
 
   const [currentUser, setCurrentUser] = useState({
     id: '',
-    username: '',
+    name: '',
     photo: '',
   });
 
@@ -35,18 +35,18 @@ const Home = ({navigation}) => {
         let users = [];
         let current = {
           id: '',
-          username: '',
+          name: '',
           photo: '',
         };
         dataSnapshot.forEach((data) => {
           if (uuid === data.val().uid) {
             current.id = uuid;
-            current.username = data.val().username;
+            current.name = data.val().name;
             current.photo = data.val().photo;
           } else {
             users.push({
               id: data.val().uid,
-              username: data.val().username,
+              name: data.val().name,
               photo: data.val().photo,
               status: data.val().status,
             });
@@ -59,24 +59,23 @@ const Home = ({navigation}) => {
 
   const toChat = async (allUs) => {
     const id = allUs.id;
-    const name = allUs.username;
+    // const name = allUs.username;
+    const name = allUs.name;
     const photo = allUs.photo;
     const status = allUs.status;
-    // console.log(allUs);
-    navigation.navigate('Chats', {
+    navigation.navigate('Chatting', {
       id,
       name,
       photo,
       status,
       userId: userId,
-      username: currentUser.username,
+      username: currentUser.name,
       userPhoto: currentUser.photo,
     });
   };
 
   useEffect(() => {
     getData();
-    // updateStatus();
   }, []);
 
   return (
@@ -89,7 +88,7 @@ const Home = ({navigation}) => {
               return (
                 <ChatThumb
                   key={allUs.id}
-                  name={allUs.username}
+                  name={allUs.name}
                   img={allUs.photo}
                   status={allUs.status}
                   // toProfile={() => navigation.navigate('Display')}

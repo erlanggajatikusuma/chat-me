@@ -25,7 +25,10 @@ function HomeTab() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      {/* <Tab.Screen name="Profile" component={ProfileStack} /> */}
+      <Tab.Screen name="Profile" component={ProfileStack} options={
+        
+      } />
     </Tab.Navigator>
   );
 }
@@ -100,7 +103,7 @@ const Router = () => {
           options={{headerShown: false}}
           component={EditStack}
         />
-        <Stack.Screen name="Profile" component={ProfileStack} />
+        {/* <Stack.Screen name="Profile" component={ProfileStack} /> */}
         <Stack.Screen
           name="Chats"
           component={ChatStack}

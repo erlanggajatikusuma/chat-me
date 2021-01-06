@@ -8,42 +8,73 @@ import {
   ScrollView,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from '../../../config/firebase/config';
 import Loader from '../../../components/atom/Loader';
 
 const Register = () => {
   const navigation = useNavigation();
 
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleSignUp = async () => {
+  const handleSignUp = () => {
     setTimeout(() => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => navigation.navigate('Profile'))
-        .catch((error) => {
-          setErrorMessage(error.message);
-          setLoading(false);
-        });
-      console.log('handleSignUp');
-    });
+        .catch((error) => setErrorMessage(error));
+    }, 2000);
     setLoading(true);
+  };
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('uid', value);
+      console.log('Set storage succes');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const insertUser = async (uuid, Name, Email) => {
+    try {
+      return await firebase
+        .database()
+        .ref('users/' + uuid)
+        .set({
+          name: Name,
+          email: Email,
+          uid: uuid,
+          gender: '',
+          phone: '',
+          photo: '',
+          status: '',
+          dateOfBirth: '',
+          date: '',
+        });
+    } catch (error) {
+      return error;
+    }
   };
 
   const signUp = async () => {
     setLoading(true);
-    firebase
+    await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(() => navigation.navigate('Profile'))
-      .catch((error) => {
-        setErrorMessage(error.message);
+      .then(() => {
+        const uid = firebase.auth().currentUser.uid;
+        storeData(uid);
+        insertUser(uid, name, email);
         setLoading(false);
-      });
+        navigation.navigate('Profile');
+      })
+      .catch((error) => setErrorMessage(error));
   };
 
   return (
@@ -57,6 +88,15 @@ const Register = () => {
           </View>
           <Text>Let's create your account!</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
+          <View style={{paddingTop: 30}}>
+            <Text style={{color: '#848484'}}>Name</Text>
+            <TextInput
+              onChangeText={(text) => setName(text)}
+              value={name}
+              autoCapitalize="none"
+              style={styles.inputText}
+            />
+          </View>
           <View style={{paddingTop: 30}}>
             <Text style={{color: '#848484'}}>Email Address</Text>
             <TextInput

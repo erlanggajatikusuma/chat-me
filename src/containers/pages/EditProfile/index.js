@@ -13,6 +13,7 @@ import {
   Alert,
   Button,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -69,8 +70,7 @@ const EditProfile = () => {
   const [specificData, setSpecificData] = useState({});
 
   const getUser = () => {
-    const auth = firebase.auth().currentUser;
-    const uid = auth.uid;
+    const uid = firebase.auth().currentUser.uid;
 
     const user = firebase.database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
@@ -162,38 +162,23 @@ const EditProfile = () => {
         .catch((error) => console.log(error));
     }
   };
-  // const insertData = () => {
-  //   if (dob === '') {
-  //     console.log('Date of Birth empty');
-  //   } else {
-  //     const uid = firebase.auth().currentUser.uid;
-  //     const eMail = firebase.auth().currentUser.email;
-  //     const ref = firebase.database().ref(`users/${uid}`);
-  //     const dOB = dob.toDateString();
-  //     ref
-  //       .set({
-  //         email: eMail,
-  //         uid: uid,
-  //         username: username,
-  //         status: 'Online',
-  //         phone: phoneNumber,
-  //         photo: photo,
-  //         gender: gender,
-  //         dateOfBirth: dOB,
-  //         date: new Date().getTime(),
-  //       })
-  //       .then(() => {
-  //         navigation.navigate('Home');
-  //         ToastAndroid.showWithGravity(
-  //           'Data Updated',
-  //           ToastAndroid.SHORT,
-  //           ToastAndroid.CENTER,
-  //         );
-  //       })
-  //       .catch((error) => console.log(error));
-  //   }
-  // };
 
+  const updateUser = async () => {
+    const uid = await AsyncStorage.getItem('uid');
+    if (dob === '') {
+      console.log('Date of Birth empty');
+    } else {
+      const dOB = dob.toDateString();
+      await firebase.database().ref(`users/${uid}`).update({
+        name: username,
+        phone: phoneNumber,
+        photo: photo,
+        gender: gender,
+        dateOfBirth: dOB,
+      });
+      navigation.navigate('Profile');
+    }
+  };
   useEffect(() => {
     // const granted = PermissionsAndroid.request(
     //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -398,7 +383,7 @@ const EditProfile = () => {
                 />
               )}
             </View>
-            <TouchableOpacity style={styles.commandButton} onPress={insertData}>
+            <TouchableOpacity style={styles.commandButton} onPress={updateUser}>
               <Text style={styles.panelButtonTitle}>Submit</Text>
             </TouchableOpacity>
             {/* <Button title="try" onPress={() => console.log('dob:', dob)} /> */}

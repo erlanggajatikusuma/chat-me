@@ -11,6 +11,7 @@ const SplashScreen = () => {
       navigation.navigate('Loading');
     }, 2000);
   }, []);
+
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={SplashImg} />

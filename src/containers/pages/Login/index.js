@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import firebase from 'firebase';
 
@@ -17,7 +17,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLoading = async () => {
     setTimeout(() => {
@@ -40,17 +40,33 @@ const Login = () => {
     handleLoading();
   };
 
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('uid', value);
+      console.log('Set storage succes');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const onLogin = async () => {
-    // setLoading(true);
+    setLoading(true);
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        navigation.navigate('Home');
+      .then(async () => {
+        const uid = firebase.auth().currentUser.uid;
+        await firebase
+          .database()
+          .ref(`users/${uid}`)
+          .update({status: 'Online', date: new Date().getTime()});
+        storeData(uid);
+        setLoading(false);
+        navigation.navigate('Profile');
       })
       .catch((error) => {
         setErrorMessage(error.message);
-        // setLoading(false);
+        setLoading(false);
       });
   };
 

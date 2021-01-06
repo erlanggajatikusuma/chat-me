@@ -9,6 +9,7 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import picture from '../../../assets/image/hachiman.jpg';
 import SettingImg from '../../../assets/icon/Settings.svg';
 import firebase from '../../../config/firebase/config';
@@ -23,7 +24,7 @@ const Profile = () => {
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState('');
   const [status, setStatus] = useState('');
-  const [specificData, setSpecificData] = useState({});
+  // const [specificData, setSpecificData] = useState({});
 
   // const updateStatus = () => {
   //   const uid = firebase.auth().currentUser.uid;
@@ -35,41 +36,36 @@ const Profile = () => {
   //   });
   // };
 
-  const updateStatus = () => {
-    setLoading(true);
-    const uid = firebase.auth().currentUser.uid;
-    firebase
-      .database()
-      .ref(`users/${uid}`)
-      .update({
-        uid,
-        status: 'Online',
-        date: new Date().getTime(),
-      })
-      .then(() => setLoading(false));
-  };
+  // const getUser = async () => {
+  //   const uid = firebase.auth().currentUser.uid;
+  //   await firebase.database().ref(`users/${uid}`).on()(
+  //     'value',
+  //     (dataSnapshot) => {
+  //       if (dataSnapshot.val() === null) {
+  //         navigation.navigate('Edit');
+  //       } else {
+  //         setName(
+  //           dataSnapshot.val() !== null ? dataSnapshot.val().username : '',
+  //         );
+  //         setEmail(dataSnapshot.val() !== null ? dataSnapshot.val().email : '');
+  //         setStatus(
+  //           dataSnapshot.val() !== null ? dataSnapshot.val().status : '',
+  //         );
+  //         setDob(
+  //           dataSnapshot.val() !== null ? dataSnapshot.val().dateOfBirth : '',
+  //         );
+  //       }
+  //     },
+  //   );
+  // };
 
-  const getUser = async () => {
-    const uid = firebase.auth().currentUser.uid;
-    await firebase.database().ref(`users/${uid}`).on()(
-      'value',
-      (dataSnapshot) => {
-        if (dataSnapshot.val() === null) {
-          navigation.navigate('Edit');
-        } else {
-          setName(
-            dataSnapshot.val() !== null ? dataSnapshot.val().username : '',
-          );
-          setEmail(dataSnapshot.val() !== null ? dataSnapshot.val().email : '');
-          setStatus(
-            dataSnapshot.val() !== null ? dataSnapshot.val().status : '',
-          );
-          setDob(
-            dataSnapshot.val() !== null ? dataSnapshot.val().dateOfBirth : '',
-          );
-        }
-      },
-    );
+  const removeValue = async () => {
+    try {
+      await AsyncStorage.removeItem('uid');
+    } catch (e) {
+      console.log(e);
+    }
+    console.log('Remove uid Storage Done.');
   };
 
   const signOut = async () => {
@@ -79,7 +75,10 @@ const Profile = () => {
     await firebase
       .auth()
       .signOut()
-      .then(() => navigation.navigate('Login'));
+      .then(() => {
+        removeValue();
+        navigation.navigate('Login');
+      });
   };
 
   const getData = async () => {
@@ -106,10 +105,41 @@ const Profile = () => {
     navigation.navigate('Login');
   };
 
+  const getAsyncStorage = async () => {
+    try {
+      return await AsyncStorage.getItem('uid');
+    } catch (e) {
+      console.log(e);
+    }
+    console.log('Get Uid Done.');
+  };
+
+  const getUser = async () => {
+    try {
+      setLoading(true);
+      const uid = await AsyncStorage.getItem('uid');
+      firebase
+        .database()
+        .ref(`users/${uid}`)
+        .on('value', async (dataSnapshot) => {
+          const snapshot = await dataSnapshot.val();
+          setName(snapshot.username);
+          setEmail(snapshot.email);
+          setStatus(snapshot.status);
+          setDob(snapshot.dateOfBirth);
+          console.log(snapshot);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    getData();
+    // getData();
     // getUser();
-    updateStatus();
+    // updateStatus();
+    getUser();
   }, []);
 
   return (
@@ -133,9 +163,11 @@ const Profile = () => {
             <Text>Location</Text>
           </View>
           <View>
-            <SettingImg width={25} height={25} />
+            <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
+              <SettingImg width={25} height={25} />
+            </TouchableOpacity>
           </View>
-          <Button title="Try" onPress={() => console.log(name)} />
+          {/* <Button title="Try" onPress={removeValue} /> */}
           <View />
           <View>
             <TouchableOpacity

@@ -1,17 +1,36 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, ActivityIndicator} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from 'firebase';
 import {useNavigation} from '@react-navigation/native';
 
-const Loading = () => {
-  const navigation = useNavigation();
+const Loading = ({navigation}) => {
+  // const navigation = useNavigation();
+
+  const getData = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        return value;
+      }
+    } catch (e) {
+      return e;
+    }
+  };
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      navigation.navigate(user ? 'Home' : 'Login');
-      console.log('user Loading: ', user);
-    });
-  }, []);
+    setTimeout(() => {
+      getData('uid').then((res) => {
+        console.log('get uid storage: ', res);
+        navigation.replace(res ? 'Profile' : 'Login');
+      });
+      // firebase.auth().onAuthStateChanged((user) => {
+      //   navigation.replace(user ? 'Chat' : 'Login');
+      //   console.log('user loading: ', user);
+      // });
+    }, 3000);
+  }, [navigation]);
+
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="pink" />
