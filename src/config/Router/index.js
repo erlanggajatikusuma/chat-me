@@ -100,7 +100,7 @@ const Router = () => {
           options={{headerShown: false}}
           component={EditStack}
         />
-        <Stack.Screen name="Display" component={ProfileStack} />
+        <Stack.Screen name="Profile" component={ProfileStack} />
         <Stack.Screen
           name="Chats"
           component={ChatStack}

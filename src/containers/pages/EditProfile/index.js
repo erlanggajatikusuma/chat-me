@@ -31,37 +31,6 @@ import Animated from 'react-native-reanimated';
 const EditProfile = () => {
   const navigation = useNavigation();
 
-  useEffect(() => {
-    // const granted = PermissionsAndroid.request(
-    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    //   {
-    //     title: 'ReactNativeCode Location Permission',
-    //     message: 'ReactNativeCode App needs access to your location ',
-    //   },
-    // );
-    // if (granted) {
-    //   Geolocation.getCurrentPosition(
-    //     (position) => {
-    //       console.log(position);
-    //       console.log('latitude: ', position.coords.latitude);
-    //       console.log('longitude: ', position.coords.longitude);
-    //       setLatitude(position.coords.latitude);
-    //       setLongitude(position.coords.longitude);
-    //     },
-    //     (error) => {
-    //       // See error code charts below.
-    //       console.log(error.code, error.message);
-    //     },
-    //     {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    //   );
-    // }
-    getUser();
-
-    return () => {
-      null;
-    };
-  }, []);
-
   // Date Time Picker
   // const [date, setDate] = useState(new Date(1598051730000));
   // const [date, setDate] = useState('');
@@ -162,7 +131,7 @@ const EditProfile = () => {
     });
   };
 
-  const insertData = () => {
+  const insertData = async () => {
     if (dob === '') {
       console.log('Date of Birth empty');
     } else {
@@ -170,7 +139,7 @@ const EditProfile = () => {
       const eMail = firebase.auth().currentUser.email;
       const ref = firebase.database().ref(`users/${uid}`);
       const dOB = dob.toDateString();
-      ref
+      await ref
         .set({
           email: eMail,
           uid: uid,
@@ -183,17 +152,78 @@ const EditProfile = () => {
           date: new Date().getTime(),
         })
         .then(() => {
-          console.log('Success');
-          navigation.navigate('Home');
           ToastAndroid.showWithGravity(
             'Data Updated',
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );
+          navigation.navigate('Home');
         })
         .catch((error) => console.log(error));
     }
   };
+  // const insertData = () => {
+  //   if (dob === '') {
+  //     console.log('Date of Birth empty');
+  //   } else {
+  //     const uid = firebase.auth().currentUser.uid;
+  //     const eMail = firebase.auth().currentUser.email;
+  //     const ref = firebase.database().ref(`users/${uid}`);
+  //     const dOB = dob.toDateString();
+  //     ref
+  //       .set({
+  //         email: eMail,
+  //         uid: uid,
+  //         username: username,
+  //         status: 'Online',
+  //         phone: phoneNumber,
+  //         photo: photo,
+  //         gender: gender,
+  //         dateOfBirth: dOB,
+  //         date: new Date().getTime(),
+  //       })
+  //       .then(() => {
+  //         navigation.navigate('Home');
+  //         ToastAndroid.showWithGravity(
+  //           'Data Updated',
+  //           ToastAndroid.SHORT,
+  //           ToastAndroid.CENTER,
+  //         );
+  //       })
+  //       .catch((error) => console.log(error));
+  //   }
+  // };
+
+  useEffect(() => {
+    // const granted = PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //   {
+    //     title: 'ReactNativeCode Location Permission',
+    //     message: 'ReactNativeCode App needs access to your location ',
+    //   },
+    // );
+    // if (granted) {
+    //   Geolocation.getCurrentPosition(
+    //     (position) => {
+    //       console.log(position);
+    //       console.log('latitude: ', position.coords.latitude);
+    //       console.log('longitude: ', position.coords.longitude);
+    //       setLatitude(position.coords.latitude);
+    //       setLongitude(position.coords.longitude);
+    //     },
+    //     (error) => {
+    //       // See error code charts below.
+    //       console.log(error.code, error.message);
+    //     },
+    //     {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    //   );
+    // }
+    getUser();
+
+    return () => {
+      null;
+    };
+  }, []);
 
   const {colors} = useTheme();
   const renderInner = () => (
@@ -371,7 +401,7 @@ const EditProfile = () => {
             <TouchableOpacity style={styles.commandButton} onPress={insertData}>
               <Text style={styles.panelButtonTitle}>Submit</Text>
             </TouchableOpacity>
-            <Button title="try" onPress={() => console.log('dob:', dob)} />
+            {/* <Button title="try" onPress={() => console.log('dob:', dob)} /> */}
           </Animated.View>
         </View>
       )}

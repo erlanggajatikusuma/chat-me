@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import firebase from 'firebase';
-import Loader from '../../../components/atom/Loader';
 
 const Login = () => {
   const navigation = useNavigation();
@@ -17,7 +17,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const handleLoading = async () => {
     setTimeout(() => {
@@ -40,57 +40,69 @@ const Login = () => {
     handleLoading();
   };
 
+  const onLogin = async () => {
+    // setLoading(true);
+    await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        navigation.navigate('Home');
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+        // setLoading(false);
+      });
+  };
+
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
-      {loading ? (
-        <Loader animating={loading} />
-      ) : (
-        <ScrollView>
-          <View style={{paddingTop: 75, paddingBottom: 35}}>
-            <Text style={styles.textLogin}>Login</Text>
-          </View>
-          <Text>Hi, Welcome back!</Text>
-          {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
-          <View style={{paddingTop: 30}}>
-            <Text style={{color: '#848484'}}>Email</Text>
-            <TextInput
-              onChangeText={(email) => setEmail(email)}
-              value={email}
-              autoCompleteType="email"
-              autoCapitalize="none"
-              style={styles.inputText}
-            />
-          </View>
-          <View style={{paddingTop: 30, paddingBottom: 30}}>
-            <Text style={{color: '#848484'}}>Password</Text>
-            <TextInput
-              onChangeText={(password) => setPassword(password)}
-              value={password}
-              autoCapitalize="none"
-              secureTextEntry={true}
-              style={styles.inputText}
-            />
-          </View>
-          <View style={{paddingBottom: 20, alignItems: 'flex-end'}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
-              <Text style={{color: '#7E98DF', fontSize: 16}}>
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={handleLogin} style={styles.loginBtn}>
-            <Text style={styles.loginText}>LOGIN</Text>
-          </TouchableOpacity>
-          <View style={styles.noAccount}>
-            <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>
-              Don't have an account?
+      <ScrollView>
+        <View style={{paddingTop: 75, paddingBottom: 35}}>
+          <Text style={styles.textLogin}>Login</Text>
+        </View>
+        <Text>Hi, Welcome back!</Text>
+        {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
+        <View style={{paddingTop: 30}}>
+          <Text style={{color: '#848484'}}>Email</Text>
+          <TextInput
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            autoCompleteType="email"
+            autoCapitalize="none"
+            style={styles.inputText}
+          />
+        </View>
+        <View style={{paddingTop: 30, paddingBottom: 30}}>
+          <Text style={{color: '#848484'}}>Password</Text>
+          <TextInput
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            autoCapitalize="none"
+            secureTextEntry={true}
+            style={styles.inputText}
+          />
+        </View>
+        <View style={{paddingBottom: 20, alignItems: 'flex-end'}}>
+          <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
+            <Text style={{color: '#7E98DF', fontSize: 16}}>
+              Forgot Password?
             </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={{color: '#7E98DF', fontSize: 14}}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      )}
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity onPress={onLogin} style={styles.loginBtn}>
+          <Text style={styles.loginText}>LOGIN</Text>
+        </TouchableOpacity>
+
+        <View style={styles.noAccount}>
+          <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>
+            Don't have an account?
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+            <Text style={{color: '#7E98DF', fontSize: 14}}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };

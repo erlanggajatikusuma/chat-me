@@ -34,6 +34,18 @@ const Register = () => {
     setLoading(true);
   };
 
+  const signUp = async () => {
+    setLoading(true);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => navigation.navigate('Profile'))
+      .catch((error) => {
+        setErrorMessage(error.message);
+        setLoading(false);
+      });
+  };
+
   return (
     <View style={{paddingHorizontal: 15, backgroundColor: ' #E5E5E5'}}>
       {loading ? (
@@ -64,7 +76,7 @@ const Register = () => {
             />
           </View>
 
-          <TouchableOpacity onPress={handleSignUp} style={styles.registerBtn}>
+          <TouchableOpacity onPress={signUp} style={styles.registerBtn}>
             <Text style={styles.registerTextBtn}>REGISTER</Text>
           </TouchableOpacity>
           <View style={styles.haveAccount}>

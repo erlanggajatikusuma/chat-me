@@ -83,8 +83,8 @@ const Chat = () => {
   // }, []);
 
   const onSend = useCallback(async (messages = []) => {
-    const uid = firebase.auth().currentUser.uid;
-    const ref = firebase.database().ref(`/chat/${uid}/${friendUID}`);
+    // const uid = firebase.auth().currentUser.uid;
+    const ref = firebase.database().ref(`/chat/${userId}/${id}`);
 
     await ref.push({
       messages: {
@@ -92,7 +92,7 @@ const Chat = () => {
         text: messages[0].text,
         createdAt: firebase.database.ServerValue.TIMESTAMP,
         user: {
-          _id: uid,
+          _id: userId,
           avatar: userPhoto,
           name: username,
         },
@@ -105,23 +105,43 @@ const Chat = () => {
 
   useEffect(() => {
     // setFriendUID(route.params.id);
-    console.log(route.params.id);
-    console.log(route.params.userId);
+    console.log('friend id param: ', route.params.id);
+    console.log('user id params: ', route.params.userId);
     // getFriendData();
     // getCurrentUser();
     // getChat();
     try {
+      let msgs = [];
       firebase
         .database()
         .ref('chat')
         .child(userId)
         .child(id)
         .on('value', (dataSnapshot) => {
-          let msgs = [];
           dataSnapshot.forEach((child) => {
-            console.log(child);
+            msgs.push(child.val().messages);
           });
         });
+
+      firebase
+        .database()
+        .ref('chat')
+        .child(id)
+        .child(userId)
+        .on('value', (dataSnapshot) => {
+          dataSnapshot.forEach((child) => {
+            msgs.push(child.val().messages);
+          });
+        });
+      msgs.sort((a, b) => {
+        if (a.createdAt < b.createdAt) {
+          return 1;
+        } else if (a.createdAt > b.createdAt) {
+          return -1;
+        }
+        return 0;
+      });
+      setMessages(msgs);
     } catch (error) {
       return error;
     }
@@ -148,13 +168,22 @@ const Chat = () => {
         {loading && <Text>Loading ....</Text>}
         <GiftedChat
           messages={messages}
-          onSend={(messages) => onSend(messages)}
+          onSend={(text) => onSend(text)}
           user={{
             _id: userId,
             name: username,
             avatar: userPhoto,
           }}
         />
+        {/* <GiftedChat
+          messages={messages}
+          onSend={(messages) => onSend(messages)}
+          user={{
+            _id: userId,
+            name: username,
+            avatar: userPhoto,
+          }}
+        /> */}
       </View>
       {/* <Button title="Try" onPress={getChat} /> */}
       {/* <View style={styles.inputWrapper}>
