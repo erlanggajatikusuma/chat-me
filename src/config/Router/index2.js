@@ -14,6 +14,7 @@ import {
   SplashScreen,
 } from '../../containers/pages';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {Button, View} from 'react-native';
 // import {createDrawerNavigator} from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
@@ -82,7 +83,24 @@ const ProfileStackScreen = () => {
 const Tab = createMaterialBottomTabNavigator();
 const TabNavigators = () => {
   return (
-    <Tab.Navigator initialRouteName="Profile">
+    <Tab.Navigator
+      initialRouteName="Profile"
+      screenOptions={({route}) => ({
+        tabBarIcon: ({color, size}) => {
+          let iconName;
+          if (route.name === 'Profile') {
+            iconName = 'home';
+          } else if (route.name === 'Chat') {
+            iconName = 'comments';
+          }
+          // You can return any component that you like here!
+          return <Icon name={iconName} size={20} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+      }}>
       <Tab.Screen
         name="Chat"
         component={ChatStackScreen}
@@ -125,6 +143,11 @@ const Router = () => {
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Forgot"
+          component={ForgotScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
