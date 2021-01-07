@@ -18,22 +18,39 @@ const ChatThumb = ({name, toProfile, toChat, img, status}) => {
         <TouchableOpacity onPress={toProfile}>
           {img ? (
             <Image
-              // source={photo}
               source={{uri: img}}
               style={{width: 60, height: 60, borderRadius: 60 / 2}}
               resizeMode="cover"
             />
           ) : (
-            <Text>{name}</Text>
+            <View
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 60 / 2,
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{color: 'white'}}>{name.split(' ', 1)}</Text>
+            </View>
           )}
         </TouchableOpacity>
       </View>
       <View style={{flex: 1, paddingLeft: 5}}>
         <TouchableOpacity onPress={toChat}>
-          <Text style={{fontWeight: 'bold', fontSize: 15, paddingVertical: 5}}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 15,
+              paddingVertical: 5,
+              color: '#9aedeb',
+            }}>
             {name}
           </Text>
-          <Text style={{flex: 1, alignItems: 'center'}}>{status}</Text>
+          <Text style={{flex: 1, alignItems: 'center', color: '#9aedeb'}}>
+            {status}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

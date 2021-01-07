@@ -10,6 +10,8 @@ const Chat = () => {
 
   const {id, name, photo, status, userId, username, userPhoto} = route.params;
 
+  const imgName = route.params.name;
+
   // const [userUid, setUserUid] = useState('');
   // const [userName, setUserName] = useState('');
   // const [userPhoto, setUserPhoto] = useState('');
@@ -155,12 +157,19 @@ const Chat = () => {
           style={{color: '#d5f7f6', marginRight: 10}}
           size={30}
         />
-        <Image style={styles.imgHeader} source={{uri: route.params.photo}} />
+        {photo ? (
+          <Image style={styles.imgHeader} source={{uri: photo}} />
+        ) : (
+          <View style={styles.textImg}>
+            <Text style={{color: 'white'}}>{imgName.split(' ', 1)}</Text>
+          </View>
+        )}
+
         <View>
           <Text style={{color: '#d5f7f6', fontSize: 20, fontWeight: 'bold'}}>
-            {route.params.name}
+            {name}
           </Text>
-          <Text style={{color: '#d5f7f6'}}>{route.params.status}</Text>
+          <Text style={{color: '#d5f7f6'}}>{status}</Text>
         </View>
       </View>
       <View style={{flex: 1}}>
@@ -185,7 +194,7 @@ const Chat = () => {
           }}
         /> */}
       </View>
-      {/* <Button title="Try" onPress={getChat} /> */}
+      {/* <Button title="Try" onPress={() => console.log(imgName.split(' ', 1))} /> */}
       {/* <View style={styles.inputWrapper}>
         <TextInput
           style={styles.inputText}
@@ -220,6 +229,16 @@ const styles = StyleSheet.create({
     width: 55,
     height: 55,
     borderRadius: 55 / 2,
+    marginRight: 20,
+  },
+  textImg: {
+    borderWidth: 1,
+    width: 55,
+    height: 55,
+    borderRadius: 55 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
     marginRight: 20,
   },
   inputWrapper: {

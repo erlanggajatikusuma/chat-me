@@ -58,26 +58,28 @@ const EditProfile = () => {
   };
 
   const [loading, setLoading] = useState(false);
-  const [photo, setPhoto] = useState(
-    'https://ui-avatars.com/api/?size=512&name=user',
-  );
+  const [photo, setPhoto] = useState('');
+  // const [photo, setPhoto] = useState(
+  //   'https://ui-avatars.com/api/?size=512&name=user',
+  // );
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [gender, setGender] = useState('Male');
+  const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [specificData, setSpecificData] = useState({});
 
-  const getUser = () => {
+  const getUser = async () => {
     const uid = firebase.auth().currentUser.uid;
 
     const user = firebase.database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
       console.log('user snapshot:', snapshot.val());
       setSpecificData(snapshot.val());
-      setUsername(snapshot.val() !== null ? snapshot.val().username : '');
+      setUsername(snapshot.val() !== null ? snapshot.val().name : '');
       setPhoneNumber(snapshot.val() !== null ? snapshot.val().phone : '');
+      setGender(snapshot.val() !== null ? snapshot.val().gender : '');
       // setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
       // setLoading(true);
     });
@@ -274,20 +276,25 @@ const EditProfile = () => {
                   alignItems: 'center',
                   position: 'relative',
                 }}>
-                <ImageBackground
-                  source={{
-                    uri: photo,
-                  }}
-                  style={{height: 100, width: 100}}
-                  imageStyle={{borderRadius: 15}}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  />
-                </ImageBackground>
+                {photo ? (
+                  <ImageBackground
+                    source={{uri: photo}}
+                    style={{height: 100, width: 100}}
+                    imageStyle={{borderRadius: 15}}>
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    />
+                  </ImageBackground>
+                ) : (
+                  <View style={styles.textImgWrapper}>
+                    <Text style={styles.textImg}>{username.split(' ', 1)}</Text>
+                  </View>
+                )}
+
                 <TouchableOpacity
                   onPress={() => bs.current.snapTo(0)}
                   style={{
@@ -302,20 +309,7 @@ const EditProfile = () => {
                 {username}
               </Text>
             </View>
-            {/* Picker */}
-            <View style={styles.action}>
-              <View style={{marginRight: 10}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Gender</Text>
-              </View>
-              <Picker
-                selectedValue={gender}
-                // style={{height: 50, width: 150}}
-                style={styles.textInput}
-                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
-              </Picker>
-            </View>
+
             <View style={styles.action}>
               <View style={{marginRight: 10}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>Name</Text>
@@ -333,6 +327,19 @@ const EditProfile = () => {
                   },
                 ]}
               />
+            </View>
+            <View style={styles.action}>
+              <View style={{marginRight: 10}}>
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Gender</Text>
+              </View>
+              <Picker
+                selectedValue={gender}
+                // style={{height: 50, width: 150}}
+                style={styles.textInput}
+                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
+                <Picker.Item label="Male" value="male" />
+                <Picker.Item label="Female" value="female" />
+              </Picker>
             </View>
             <View style={styles.action}>
               <View style={{marginRight: 10}}>
@@ -366,7 +373,6 @@ const EditProfile = () => {
                   ) : (
                     <Text>Choose</Text>
                   )}
-                  {/* <Text>{dob}</Text> */}
                 </TouchableOpacity>
                 {/* <View>
                   <Button onPress={showDatepicker} title="Show date picker!" />
@@ -399,6 +405,19 @@ export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  textImgWrapper: {
+    height: 100,
+    width: 100,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#c7c9c9',
+  },
+  textImg: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#364447',
   },
   commandButton: {
     padding: 15,

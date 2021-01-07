@@ -8,15 +8,6 @@ import SearchBar from '../../../components/molecules/SearchBar';
 
 const Home = ({navigation}) => {
   const userId = firebase.auth().currentUser.uid;
-  // const updateStatus = () => {
-  //   const uid = firebase.auth().currentUser.uid;
-  //   const ref = firebase.database().ref(`/users/${uid}`);
-  //   ref.update({
-  //     uid,
-  //     status: 'Online',
-  //     date: new Date().getTime(),
-  //   });
-  // };
 
   const [currentUser, setCurrentUser] = useState({
     id: '',

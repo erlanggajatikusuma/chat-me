@@ -115,19 +115,19 @@ const Profile = () => {
   };
 
   const getUser = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const uid = await AsyncStorage.getItem('uid');
       firebase
         .database()
         .ref(`users/${uid}`)
         .on('value', async (dataSnapshot) => {
           const snapshot = await dataSnapshot.val();
-          setName(snapshot.username);
+          setName(snapshot.name);
           setEmail(snapshot.email);
           setStatus(snapshot.status);
           setDob(snapshot.dateOfBirth);
-          console.log(snapshot);
+          // console.log(snapshot);
         });
     } catch (error) {
       console.log(error);

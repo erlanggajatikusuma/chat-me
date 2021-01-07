@@ -60,7 +60,11 @@ const ChatStackScreen = () => {
         component={ChatListScreen}
         options={{headerShown: false}}
       />
-      <ChatStack.Screen name="Chatting" component={ChatScreen} />
+      <ChatStack.Screen
+        name="Chatting"
+        component={ChatScreen}
+        options={{headerShown: false}}
+      />
     </ChatStack.Navigator>
   );
 };
