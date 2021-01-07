@@ -1,5 +1,13 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet, Text, TextInput, View, Image, Button} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  FlatList,
+  Button,
+} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -11,10 +19,6 @@ const Chat = () => {
   const {id, name, photo, status, userId, username, userPhoto} = route.params;
 
   const imgName = route.params.name;
-
-  // const [userUid, setUserUid] = useState('');
-  // const [userName, setUserName] = useState('');
-  // const [userPhoto, setUserPhoto] = useState('');
 
   const [friendUID, setFriendUID] = useState('');
   const [friendName, setFriendName] = useState('');
@@ -74,44 +78,7 @@ const Chat = () => {
     // setMessages(data);
   };
 
-  // GiftedChat
-
-  const [messages, setMessages] = useState([]);
-
-  // const onSend = useCallback((messages = []) => {
-  //   setMessages((previousMessages) =>
-  //     GiftedChat.append(previousMessages, messages),
-  //   );
-  // }, []);
-
-  const onSend = useCallback(async (messages = []) => {
-    // const uid = firebase.auth().currentUser.uid;
-    const ref = firebase.database().ref(`/chat/${userId}/${id}`);
-
-    await ref.push({
-      messages: {
-        _id: Math.floor(Math.random() * 10000000000000) + 1,
-        text: messages[0].text,
-        createdAt: firebase.database.ServerValue.TIMESTAMP,
-        user: {
-          _id: userId,
-          avatar: userPhoto,
-          name: username,
-        },
-      },
-    });
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages),
-    );
-  }, []);
-
-  useEffect(() => {
-    // setFriendUID(route.params.id);
-    console.log('friend id param: ', route.params.id);
-    console.log('user id params: ', route.params.userId);
-    // getFriendData();
-    // getCurrentUser();
-    // getChat();
+  const allChat = async () => {
     try {
       let msgs = [];
       firebase
@@ -119,10 +86,8 @@ const Chat = () => {
         .ref('chat')
         .child(userId)
         .child(id)
-        .on('value', (dataSnapshot) => {
-          dataSnapshot.forEach((child) => {
-            msgs.push(child.val().messages);
-          });
+        .on('child_added', async (dataSnapshot) => {
+          msgs.push(dataSnapshot.val().messages);
         });
 
       firebase
@@ -130,10 +95,8 @@ const Chat = () => {
         .ref('chat')
         .child(id)
         .child(userId)
-        .on('value', (dataSnapshot) => {
-          dataSnapshot.forEach((child) => {
-            msgs.push(child.val().messages);
-          });
+        .on('child_added', async (dataSnapshot) => {
+          msgs.push(dataSnapshot.val().messages);
         });
       msgs.sort((a, b) => {
         if (a.createdAt < b.createdAt) {
@@ -147,6 +110,101 @@ const Chat = () => {
     } catch (error) {
       return error;
     }
+  };
+  // GiftedChat
+
+  const user = {
+    _id: userId,
+    name: username,
+    avatar: userPhoto,
+  };
+
+  const otherUser = {
+    _id: id,
+    name: name,
+    avatar: photo,
+  };
+
+  const [messages, setMessages] = useState([]);
+  const [state, setState] = useState({
+    step: 0,
+    isTyping: false,
+  });
+
+  const setIsTyping = () => {
+    setState({
+      ...state,
+      isTyping: !state.isTyping,
+    });
+  };
+
+  // const onSend = useCallback((messages = []) => {
+  //   setMessages((previousMessages) =>
+  //     GiftedChat.append(previousMessages, messages),
+  //   );
+  // }, []);
+
+  // const onSend = useCallback((messages = []) => {
+  //   const uid = firebase.auth().currentUser.uid;
+  //   const ref = firebase.database().ref(`/chat/${userId}/${id}`);
+  //   ref.push({
+  //     messages: {
+  //       _id: Math.floor(Math.random() * 10000000000000) + 1,
+  //       text: messages[0].text,
+  //       createdAt: firebase.database.ServerValue.TIMESTAMP,
+  //       user: user,
+  //     },
+  //   });
+  //   setMessages((previousMessages) =>
+  //     GiftedChat.append(previousMessages, messages),
+  //   );
+  // }, []);
+
+  const onSend = (messages) => {
+    const ref = firebase.database().ref(`/chat/${userId}/${id}`);
+    ref.push({
+      messages: {
+        _id: Math.floor(Math.random() * 10000000000000) + 1,
+        text: messages[0].text,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        user: user,
+      },
+    });
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, messages),
+    );
+  };
+
+  const fetchMsgs = () => {
+    try {
+      let msgs = [];
+      const ref = firebase.database().ref('chat').child(id).child(userId);
+      const ref2 = firebase.database().ref('chat').child(userId).child(id);
+      ref.on('child_added', (dataSnapshot) => {
+        msgs.push(dataSnapshot.val().messages);
+      });
+      ref2.on('child_added', (dataSnapshot) => {
+        msgs.push(dataSnapshot.val().messages);
+      });
+      msgs.sort((a, b) => {
+        if (a.createdAt < b.createdAt) {
+          return 1;
+        } else if (a.createdAt > b.createdAt) {
+          return -1;
+        }
+        return 0;
+      });
+      setMessages(msgs);
+    } catch (error) {
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    console.log('friend id param: ', route.params.id);
+    console.log('user id params: ', route.params.userId);
+
+    fetchMsgs();
   }, []);
 
   return (
@@ -173,16 +231,11 @@ const Chat = () => {
         </View>
       </View>
       <View style={{flex: 1}}>
-        {/* <Text>Messages</Text> */}
-        {loading && <Text>Loading ....</Text>}
         <GiftedChat
           messages={messages}
-          onSend={(text) => onSend(text)}
-          user={{
-            _id: userId,
-            name: username,
-            avatar: userPhoto,
-          }}
+          onSend={(messages) => onSend(messages)}
+          user={user}
+          scrollToBottom
         />
         {/* <GiftedChat
           messages={messages}
@@ -199,7 +252,7 @@ const Chat = () => {
         <TextInput
           style={styles.inputText}
           placeholder="Type here..."
-          //   onChangeText={(text) => handleOnChange(text)}
+          onChangeText={(text) => handleOnChange(text)}
         />
         <View style={styles.btnWrapper}>
           <MaterialCommunityIcon
@@ -218,6 +271,16 @@ const Chat = () => {
 export default Chat;
 
 const styles = StyleSheet.create({
+  container: {
+    height: 44,
+    width: '100%',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(0,0,0,0.3)',
+  },
   header: {
     backgroundColor: '#7E98DF',
     paddingHorizontal: 10,
@@ -252,6 +315,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     width: '80%',
+    height: 48,
     backgroundColor: '#9aedeb',
     fontSize: 17,
   },
