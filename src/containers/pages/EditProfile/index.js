@@ -33,8 +33,6 @@ const EditProfile = () => {
   const navigation = useNavigation();
 
   // Date Time Picker
-  // const [date, setDate] = useState(new Date(1598051730000));
-  // const [date, setDate] = useState('');
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
@@ -59,16 +57,19 @@ const EditProfile = () => {
 
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState('');
-  // const [photo, setPhoto] = useState(
-  //   'https://ui-avatars.com/api/?size=512&name=user',
-  // );
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
-  const [specificData, setSpecificData] = useState({});
+  // const [latitude, setLatitude] = useState('');
+  // const [longitude, setLongitude] = useState('');
+  // const [lastPosition, setLastPosition] = useState('');
+  const [state, setState] = useState({
+    latitude: '',
+    longitude: '',
+    lastPosition: '',
+  });
+  // const [specificData, setSpecificData] = useState({});
 
   const getUser = async () => {
     const uid = firebase.auth().currentUser.uid;
@@ -76,10 +77,11 @@ const EditProfile = () => {
     const user = firebase.database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
       console.log('user snapshot:', snapshot.val());
-      setSpecificData(snapshot.val());
+      // setSpecificData(snapshot.val());
       setUsername(snapshot.val() !== null ? snapshot.val().name : '');
       setPhoneNumber(snapshot.val() !== null ? snapshot.val().phone : '');
       setGender(snapshot.val() !== null ? snapshot.val().gender : '');
+      setPhoto(snapshot.val() !== null ? snapshot.val().photo : '');
       // setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
       // setLoading(true);
     });
@@ -91,6 +93,10 @@ const EditProfile = () => {
     maxHeight: 70,
     quality: 1,
     saveToPhotos: true,
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
   };
 
   const takeImage = () => {
@@ -109,6 +115,7 @@ const EditProfile = () => {
         } else if (response.error) {
           console.log('ImagePicker Error: ', response.error);
         } else {
+          bs.current.snapTo(1);
           let source = {uri: response.uri};
           console.log(source);
           // setPhoto(source);
@@ -124,34 +131,34 @@ const EditProfile = () => {
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
       } else {
-        const source = {uri: response.uri};
-        // setPhoto(source);
         bs.current.snapTo(1);
-        console.log(response);
-        console.log(source);
+        const uri = response.uri;
+        setPhoto(uri);
+        // console.log('uri img: ', uri);
+        // const source = {uri: response.uri};
+        // setPhoto(source);
+        // console.log('uri: ', source);
       }
     });
   };
 
-  const insertData = async () => {
+  const updateUser = async () => {
+    const uid = await AsyncStorage.getItem('uid');
     if (dob === '') {
       console.log('Date of Birth empty');
+      console.log('latitude: ', state.latitude);
+      console.log('longitude: ', state.longitude);
     } else {
-      const uid = firebase.auth().currentUser.uid;
-      const eMail = firebase.auth().currentUser.email;
-      const ref = firebase.database().ref(`users/${uid}`);
       const dOB = dob.toDateString();
-      await ref
-        .set({
-          email: eMail,
-          uid: uid,
-          username: username,
-          status: 'Online',
+      await firebase
+        .database()
+        .ref(`users/${uid}`)
+        .update({
+          name: username,
           phone: phoneNumber,
           photo: photo,
           gender: gender,
           dateOfBirth: dOB,
-          date: new Date().getTime(),
         })
         .then(() => {
           ToastAndroid.showWithGravity(
@@ -159,56 +166,53 @@ const EditProfile = () => {
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );
-          navigation.navigate('Home');
+          navigation.navigate('Profile');
         })
         .catch((error) => console.log(error));
-    }
-  };
-
-  const updateUser = async () => {
-    const uid = await AsyncStorage.getItem('uid');
-    if (dob === '') {
-      console.log('Date of Birth empty');
-    } else {
-      const dOB = dob.toDateString();
-      await firebase.database().ref(`users/${uid}`).update({
-        name: username,
-        phone: phoneNumber,
-        photo: photo,
-        gender: gender,
-        dateOfBirth: dOB,
-      });
-      navigation.navigate('Profile');
+      // navigation.navigate('Profile');
     }
   };
   useEffect(() => {
-    // const granted = PermissionsAndroid.request(
-    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    //   {
-    //     title: 'ReactNativeCode Location Permission',
-    //     message: 'ReactNativeCode App needs access to your location ',
-    //   },
-    // );
-    // if (granted) {
-    //   Geolocation.getCurrentPosition(
-    //     (position) => {
-    //       console.log(position);
-    //       console.log('latitude: ', position.coords.latitude);
-    //       console.log('longitude: ', position.coords.longitude);
-    //       setLatitude(position.coords.latitude);
-    //       setLongitude(position.coords.longitude);
-    //     },
-    //     (error) => {
-    //       // See error code charts below.
-    //       console.log(error.code, error.message);
-    //     },
-    //     {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    //   );
-    // }
+    const granted = PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'ReactNativeCode Location Permission',
+        message: 'ReactNativeCode App needs access to your location ',
+      },
+    );
+    if (granted) {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log(position);
+          // console.log('latitude: ', position.coords.latitude.toString());
+          // console.log('longitude: ', position.coords.longitude.toString());
+          setState({
+            ...state,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          // setLatitude(position.coords.latitude);
+          // setLongitude(position.coords.longitude);
+        },
+        (error) => {
+          // See error code charts below.
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+      // this.watchID = Geolocation.watchPosition((lastPosition) => {
+      //   setState({
+      //     ...state,
+      //     lastPosition: lastPosition,
+      //   });
+      //   console.log(lastPosition);
+      // });
+    }
     getUser();
 
     return () => {
       null;
+      // Geolocation.clearWatch(this.watchID);
     };
   }, []);
 
@@ -311,7 +315,7 @@ const EditProfile = () => {
             </View>
 
             <View style={styles.action}>
-              <View style={{marginRight: 10}}>
+              <View style={{width: 90}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>Name</Text>
               </View>
               <TextInput
@@ -329,7 +333,7 @@ const EditProfile = () => {
               />
             </View>
             <View style={styles.action}>
-              <View style={{marginRight: 10}}>
+              <View style={{width: 90}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>Gender</Text>
               </View>
               <Picker
@@ -342,7 +346,7 @@ const EditProfile = () => {
               </Picker>
             </View>
             <View style={styles.action}>
-              <View style={{marginRight: 10}}>
+              <View style={{width: 90}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>Phone</Text>
               </View>
               <TextInput
@@ -361,7 +365,7 @@ const EditProfile = () => {
               />
             </View>
             <View style={styles.action}>
-              <View style={{marginRight: 10}}>
+              <View style={{width: 90}}>
                 <Text style={{fontSize: 15, fontWeight: 'bold'}}>
                   Date of Birth
                 </Text>

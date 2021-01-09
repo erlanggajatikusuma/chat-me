@@ -1,7 +1,7 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
 import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from 'firebase';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
@@ -17,8 +17,9 @@ const Home = ({navigation}) => {
 
   const [allUser, setAllUser] = useState([]);
 
-  const getData = () => {
-    const uuid = firebase.auth().currentUser.uid;
+  const getData = async () => {
+    // const uuid = firebase.auth().currentUser.uid;
+    const uuid = await AsyncStorage.getItem('uid');
     firebase
       .database()
       .ref('users')
@@ -70,7 +71,7 @@ const Home = ({navigation}) => {
   }, []);
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#FFF'}}>
       <ScrollView>
         <SearchBar />
         {allUser.length > 0 ? (

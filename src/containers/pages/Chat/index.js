@@ -12,6 +12,7 @@ import {useRoute} from '@react-navigation/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GiftedChat} from 'react-native-gifted-chat';
 import firebase from 'firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chat = () => {
   const route = useRoute();
@@ -175,15 +176,16 @@ const Chat = () => {
     );
   };
 
-  const fetchMsgs = () => {
+  const fetchMsgs = async () => {
     try {
       let msgs = [];
-      const ref = firebase.database().ref('chat').child(id).child(userId);
-      const ref2 = firebase.database().ref('chat').child(userId).child(id);
-      ref.on('child_added', (dataSnapshot) => {
+      const uid = await AsyncStorage.getItem('uid');
+      const ref = firebase.database().ref('chat').child(id).child(uid);
+      const ref2 = firebase.database().ref('chat').child(uid).child(id);
+      ref.on('child_added', async (dataSnapshot) => {
         msgs.push(dataSnapshot.val().messages);
       });
-      ref2.on('child_added', (dataSnapshot) => {
+      ref2.on('child_added', async (dataSnapshot) => {
         msgs.push(dataSnapshot.val().messages);
       });
       msgs.sort((a, b) => {
@@ -211,9 +213,9 @@ const Chat = () => {
     <View style={{flex: 1}}>
       <View style={styles.header}>
         <MaterialCommunityIcon
-          name="arrow-left"
-          style={{color: '#d5f7f6', marginRight: 10}}
-          size={30}
+          name="chevron-left"
+          style={{color: '#d5f7f6'}}
+          size={60}
         />
         {photo ? (
           <Image style={styles.imgHeader} source={{uri: photo}} />
@@ -237,17 +239,7 @@ const Chat = () => {
           user={user}
           scrollToBottom
         />
-        {/* <GiftedChat
-          messages={messages}
-          onSend={(messages) => onSend(messages)}
-          user={{
-            _id: userId,
-            name: username,
-            avatar: userPhoto,
-          }}
-        /> */}
       </View>
-      {/* <Button title="Try" onPress={() => console.log(imgName.split(' ', 1))} /> */}
       {/* <View style={styles.inputWrapper}>
         <TextInput
           style={styles.inputText}
@@ -283,7 +275,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#7E98DF',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 5,
     height: 75,
     alignItems: 'center',
     flexDirection: 'row',
@@ -293,6 +285,7 @@ const styles = StyleSheet.create({
     height: 55,
     borderRadius: 55 / 2,
     marginRight: 20,
+    marginLeft: -5,
   },
   textImg: {
     borderWidth: 1,
@@ -303,6 +296,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'black',
     marginRight: 20,
+    marginLeft: -5,
   },
   inputWrapper: {
     flexDirection: 'row',

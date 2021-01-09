@@ -5,15 +5,10 @@ import Menu from '../../../assets/icon/menu.svg';
 
 const SearchBar = () => {
   return (
-    <View
-      style={{
-        backgroundColor: 'green',
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
-      }}>
-      <Text style={{fontSize: 24, fontWeight: 'bold'}}>ChatMe</Text>
+    <View style={styles.wrapper}>
+      <Text style={{fontSize: 24, fontWeight: 'bold', color: '#9aedeb'}}>
+        ChatMe
+      </Text>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={{paddingRight: 20}}>
           <SearchIcon width={25} height={25} />
@@ -26,4 +21,12 @@ const SearchBar = () => {
 
 export default SearchBar;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: '#3685d9',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+  },
+});

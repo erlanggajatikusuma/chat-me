@@ -62,7 +62,7 @@ const Login = () => {
           .update({status: 'Online', date: new Date().getTime()});
         storeData(uid);
         setLoading(false);
-        navigation.navigate('Profile');
+        navigation.navigate('Loading');
       })
       .catch((error) => {
         setErrorMessage(error.message);
@@ -106,9 +106,13 @@ const Login = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={onLogin} style={styles.loginBtn}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <Text>Loading ....</Text>
+        ) : (
+          <TouchableOpacity onPress={onLogin} style={styles.loginBtn}>
+            <Text style={styles.loginText}>LOGIN</Text>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.noAccount}>
           <Text style={{color: '#313131', paddingRight: 5, fontSize: 14}}>

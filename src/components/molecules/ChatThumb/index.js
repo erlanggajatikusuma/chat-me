@@ -1,16 +1,13 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import photo from '../../../assets/image/hachiman.jpg';
 
 const ChatThumb = ({name, toProfile, toChat, img, status}) => {
   return (
     <View
       style={{
         flexDirection: 'row',
-        backgroundColor: '#3685d9',
-        borderWidth: 1,
-        borderColor: 'white',
+        // backgroundColor: '#3685d9',
         paddingTop: 10,
         paddingBottom: 3,
       }}>
@@ -44,11 +41,12 @@ const ChatThumb = ({name, toProfile, toChat, img, status}) => {
               fontWeight: 'bold',
               fontSize: 15,
               paddingVertical: 5,
-              color: '#9aedeb',
+              color: 'black',
+              // color: '#9aedeb',
             }}>
             {name}
           </Text>
-          <Text style={{flex: 1, alignItems: 'center', color: '#9aedeb'}}>
+          <Text style={{flex: 1, alignItems: 'center', color: 'black'}}>
             {status}
           </Text>
         </TouchableOpacity>

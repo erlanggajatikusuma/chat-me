@@ -24,10 +24,6 @@ const Loading = ({navigation}) => {
         console.log('get uid storage: ', res);
         navigation.replace(res ? 'Profile' : 'Login');
       });
-      // firebase.auth().onAuthStateChanged((user) => {
-      //   navigation.replace(user ? 'Chat' : 'Login');
-      //   console.log('user loading: ', user);
-      // });
     }, 3000);
   }, [navigation]);
 
