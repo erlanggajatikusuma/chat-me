@@ -60,17 +60,14 @@ const EditProfile = () => {
   const [photo, setPhoto] = useState('');
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState('Male');
   const [dob, setDob] = useState('');
-  // const [latitude, setLatitude] = useState('');
-  // const [longitude, setLongitude] = useState('');
   // const [lastPosition, setLastPosition] = useState('');
   const [state, setState] = useState({
     latitude: '',
     longitude: '',
     lastPosition: '',
   });
-  // const [specificData, setSpecificData] = useState({});
 
   const getUser = async () => {
     const uid = firebase().currentUser.uid;
@@ -78,10 +75,9 @@ const EditProfile = () => {
     const user = database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
       console.log('user snapshot:', snapshot.val());
-      // setSpecificData(snapshot.val());
       setUsername(snapshot.val() !== null ? snapshot.val().name : '');
       setPhoneNumber(snapshot.val() !== null ? snapshot.val().phone : '');
-      setGender(snapshot.val() !== null ? snapshot.val().gender : '');
+      setGender(snapshot.val().gender);
       setPhoto(snapshot.val() !== null ? snapshot.val().photo : '');
       // setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
       // setLoading(true);
@@ -117,7 +113,7 @@ const EditProfile = () => {
           console.log('ImagePicker Error: ', response.error);
         } else {
           bs.current.snapTo(1);
-          let source = {uri: response.uri};
+          let source = response.uri;
           console.log(source);
           // setPhoto(source);
         }
@@ -146,9 +142,7 @@ const EditProfile = () => {
   const updateUser = async () => {
     const uid = await AsyncStorage.getItem('uid');
     if (dob === '') {
-      console.log('Date of Birth empty');
-      console.log('latitude: ', state.latitude);
-      console.log('longitude: ', state.longitude);
+      alert('Date of Birth empty');
     } else {
       const dOB = dob.toDateString();
       await database()
@@ -159,6 +153,8 @@ const EditProfile = () => {
           photo: photo,
           gender: gender,
           dateOfBirth: dOB,
+          latitude: state.latitude,
+          longitude: state.longitude,
         })
         .then(() => {
           ToastAndroid.showWithGravity(
@@ -166,10 +162,9 @@ const EditProfile = () => {
             ToastAndroid.SHORT,
             ToastAndroid.CENTER,
           );
-          navigation.navigate('Profile');
+          navigation.replace('Profile');
         })
         .catch((error) => console.log(error));
-      // navigation.navigate('Profile');
     }
   };
   useEffect(() => {
@@ -270,16 +265,8 @@ const EditProfile = () => {
               margin: 20,
               opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
             }}>
-            <View style={{alignItems: 'center'}}>
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  position: 'relative',
-                }}>
+            <View style={{alignItems: 'center', paddingBottom: 25}}>
+              <View style={styles.photoBgWrapper}>
                 {photo ? (
                   <ImageBackground
                     source={{uri: photo}}
@@ -341,8 +328,8 @@ const EditProfile = () => {
                 // style={{height: 50, width: 150}}
                 style={styles.textInput}
                 onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
-                <Picker.Item label="Male" value="male" />
-                <Picker.Item label="Female" value="female" />
+                <Picker.Item label="Male" value="Male" />
+                <Picker.Item label="Female" value="Female" />
               </Picker>
             </View>
             <View style={styles.action}>
@@ -375,12 +362,9 @@ const EditProfile = () => {
                   {dob ? (
                     <Text>{dob.toDateString()}</Text>
                   ) : (
-                    <Text>Choose</Text>
+                    <Text style={{paddingLeft: 9}}>Choose</Text>
                   )}
                 </TouchableOpacity>
-                {/* <View>
-                  <Button onPress={showDatepicker} title="Show date picker!" />
-                </View> */}
               </View>
               {show && (
                 <DateTimePicker
@@ -396,7 +380,10 @@ const EditProfile = () => {
             <TouchableOpacity style={styles.commandButton} onPress={updateUser}>
               <Text style={styles.panelButtonTitle}>Submit</Text>
             </TouchableOpacity>
-            {/* <Button title="try" onPress={() => console.log('dob:', dob)} /> */}
+            <Button
+              title="try"
+              onPress={() => console.log('Gender:', gender)}
+            />
           </Animated.View>
         </View>
       )}
@@ -409,6 +396,14 @@ export default EditProfile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  photoBgWrapper: {
+    height: 100,
+    width: 100,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   textImgWrapper: {
     height: 100,

@@ -19,27 +19,6 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleLoading = async () => {
-    setTimeout(() => {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(() => {
-          navigation.navigate('Home');
-        })
-        .catch((error) => {
-          setErrorMessage(error.message);
-          setLoading(false);
-        });
-      console.log('handleLogin');
-    }, 2000);
-    setLoading(true);
-  };
-
-  const handleLogin = () => {
-    handleLoading();
-  };
-
   const storeData = async (value) => {
     try {
       await AsyncStorage.setItem('uid', value);
@@ -97,7 +76,7 @@ const Login = () => {
           />
         </View>
         <View style={{paddingBottom: 20, alignItems: 'flex-end'}}>
-          <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
+          <TouchableOpacity onPress={() => navigation.replace('Forgot')}>
             <Text style={{color: '#7E98DF', fontSize: 16}}>
               Forgot Password?
             </Text>

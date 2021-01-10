@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firebase from '../../../config/firebase/config';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import Loader from '../../../components/atom/Loader';
 
 const Register = () => {
@@ -20,17 +21,6 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const handleSignUp = () => {
-    setTimeout(() => {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(() => navigation.navigate('Profile'))
-        .catch((error) => setErrorMessage(error));
-    }, 2000);
-    setLoading(true);
-  };
 
   const storeData = async (value) => {
     try {
@@ -43,8 +33,7 @@ const Register = () => {
 
   const insertUser = async (uuid, Name, Email) => {
     try {
-      return await firebase
-        .database()
+      return await database()
         .ref('users/' + uuid)
         .set({
           name: Name,
@@ -53,9 +42,11 @@ const Register = () => {
           gender: '',
           phone: '',
           photo: '',
-          status: '',
+          status: 'Online',
           dateOfBirth: '',
           date: '',
+          latitude: '',
+          longitude: '',
         });
     } catch (error) {
       return error;
@@ -64,15 +55,14 @@ const Register = () => {
 
   const signUp = async () => {
     setLoading(true);
-    await firebase
-      .auth()
+    await auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        const uid = firebase.auth().currentUser.uid;
+        const uid = auth().currentUser.uid;
         storeData(uid);
         insertUser(uid, name, email);
         setLoading(false);
-        navigation.navigate('Profile');
+        navigation.replace('Profile');
       })
       .catch((error) => setErrorMessage(error));
   };

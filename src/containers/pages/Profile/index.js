@@ -62,15 +62,6 @@ const Profile = () => {
       });
   };
 
-  const getAsyncStorage = async () => {
-    try {
-      return await AsyncStorage.getItem('uid');
-    } catch (e) {
-      console.log(e);
-    }
-    console.log('Get Uid Done.');
-  };
-
   const getUser = async () => {
     try {
       const uid = await AsyncStorage.getItem('uid');
@@ -105,7 +96,10 @@ const Profile = () => {
         <Loader animating={loading} />
       ) : (
         <>
-          <View style={{flexDirection: 'row', paddingLeft: 15}}>
+          <View style={styles.header}>
+            <Text style={styles.textHeader}>Profile</Text>
+          </View>
+          <View style={{flexDirection: 'row', paddingLeft: 15, paddingTop: 20}}>
             {photo ? (
               <Image source={{uri: photo}} style={styles.imgStyle} />
             ) : (
@@ -208,6 +202,19 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  header: {
+    // backgroundColor: '#6662f5',
+    backgroundColor: '#6c68ed',
+    height: 50,
+    justifyContent: 'center',
+  },
+  textHeader: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#d5f7f6',
+  },
   imgStyle: {
     width: 70,
     height: 70,
@@ -225,7 +232,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   profileWrapper: {
-    backgroundColor: '#12b3cc',
+    // backgroundColor: '#12b3cc',
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 15,

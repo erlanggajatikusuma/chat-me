@@ -74,7 +74,11 @@ const ProfileStack = createStackNavigator();
 const ProfileStackScreen = () => {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{headerShown: false}}
+      />
       <ProfileStack.Screen name="Edit" component={EditScreen} />
     </ProfileStack.Navigator>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Button, ScrollView, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -85,7 +85,6 @@ const Home = ({navigation}) => {
                   img={allUs.photo}
                   status={allUs.status}
                   // toProfile={() => navigation.navigate('Display')}
-                  // toChat={() => navigation.navigate('Chats')}
                   toChat={() => toChat(allUs)}
                 />
               );
@@ -102,5 +101,3 @@ const Home = ({navigation}) => {
 };
 
 export default Home;
-
-const styles = StyleSheet.create({});

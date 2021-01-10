@@ -1,11 +1,9 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet, Text, TextInput, View, Image, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View, Image} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GiftedChat} from 'react-native-gifted-chat';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Chat = () => {
@@ -30,8 +28,6 @@ const Chat = () => {
     receiver: receiver,
     receiverDetail: [],
   });
-
-  // GiftedChat
 
   const user = {
     _id: senderID,
@@ -88,55 +84,10 @@ const Chat = () => {
     await database().ref(`chat/${senderID}/${receiver}`).push(message);
     await database().ref(`chat/${receiver}/${senderID}`).push(message);
   };
-  // const [messages, setMessages] = useState([]);
-
-  // const onSend = (messages) => {
-  //   const ref = database().ref(`/chat/${userId}/${id}`);
-  //   ref.push({
-  //     messages: {
-  //       _id: Math.floor(Math.random() * 10000000000000) + 1,
-  //       text: messages[0].text,
-  //       createdAt: database.ServerValue.TIMESTAMP,
-  //       user: user,
-  //     },
-  //   });
-  //   setMessages((previousMessages) =>
-  //     GiftedChat.append(previousMessages, messages),
-  //   );
-  // };
-
-  const fetchMsgs = async () => {
-    try {
-      let msgs = [];
-      const uid = await AsyncStorage.getItem('uid');
-      const ref = database().ref('chat').child(id).child(uid);
-      const ref2 = database().ref('chat').child(uid).child(id);
-      ref.on('child_added', async (dataSnapshot) => {
-        msgs.push(dataSnapshot.val().messages);
-      });
-      ref2.on('child_added', async (dataSnapshot) => {
-        msgs.push(dataSnapshot.val().messages);
-        console.log('bagong', dataSnapshot.val().messages);
-      });
-      msgs.sort((a, b) => {
-        if (a.createdAt < b.createdAt) {
-          return 1;
-        } else if (a.createdAt > b.createdAt) {
-          return -1;
-        }
-        return 0;
-      });
-      setMessages(msgs);
-    } catch (error) {
-      return error;
-    }
-  };
 
   useEffect(() => {
     getChat();
-    handleReceiver();
-
-    // fetchMsgs();
+    // handleReceiver();
   }, []);
 
   return (
@@ -159,7 +110,17 @@ const Chat = () => {
           <Text style={{color: '#d5f7f6', fontSize: 20, fontWeight: 'bold'}}>
             {name}
           </Text>
-          <Text style={{color: '#d5f7f6'}}>{status}</Text>
+          {status !== 'Online' ? (
+            <View style={styles.body}>
+              <View style={styles.dotOffline} />
+              <Text style={{color: '#d5f7f6'}}>{status}</Text>
+            </View>
+          ) : (
+            <View style={styles.body}>
+              <View style={styles.dotOnline} />
+              <Text style={{color: '#d5f7f6'}}>{status}</Text>
+            </View>
+          )}
         </View>
       </View>
       <View style={{flex: 1}}>
@@ -169,26 +130,7 @@ const Chat = () => {
           user={user}
           scrollToBottom
         />
-        <Button
-          title="Try"
-          onPress={() => console.log('messages: ', state.messages)}
-        />
       </View>
-      {/* <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Type here..."
-          onChangeText={(text) => handleOnChange(text)}
-        />
-        <View style={styles.btnWrapper}>
-          <MaterialCommunityIcon
-            name="send-circle"
-            style={{color: '#7E98DF'}}
-            size={45}
-            onPress={() => console.log('Sending')}
-          />
-        </View>
-      </View> */}
     </View>
   );
 };
@@ -208,7 +150,6 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#7E98DF',
-    // paddingHorizontal: 5,
     height: 75,
     alignItems: 'center',
     flexDirection: 'row',
@@ -247,7 +188,6 @@ const styles = StyleSheet.create({
     fontSize: 17,
   },
   btnWrapper: {
-    // height: appStyle.fieldHeight,
     flexDirection: 'row',
     borderTopRightRadius: 20,
     borderBottomRightRadius: 20,
@@ -255,5 +195,29 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     width: '20%',
     backgroundColor: '#9aedeb',
+  },
+  // status: {
+  //   color: '#faf8f0',
+  //   fontSize: 14,
+  //   marginLeft: 5,
+  // },
+  dotOnline: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: 'green',
+    marginRight: 5,
+    alignSelf: 'center',
+  },
+  dotOffline: {
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    backgroundColor: 'red',
+    marginRight: 5,
+    alignSelf: 'center',
+  },
+  body: {
+    flexDirection: 'row',
   },
 });
