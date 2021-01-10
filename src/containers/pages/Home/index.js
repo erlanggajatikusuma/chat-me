@@ -2,12 +2,13 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import {Button, ScrollView, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firebase from 'firebase';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import ChatThumb from '../../../components/molecules/ChatThumb';
 import SearchBar from '../../../components/molecules/SearchBar';
 
 const Home = ({navigation}) => {
-  const userId = firebase.auth().currentUser.uid;
+  const userId = auth().currentUser.uid;
 
   const [currentUser, setCurrentUser] = useState({
     id: '',
@@ -18,10 +19,9 @@ const Home = ({navigation}) => {
   const [allUser, setAllUser] = useState([]);
 
   const getData = async () => {
-    // const uuid = firebase.auth().currentUser.uid;
     const uuid = await AsyncStorage.getItem('uid');
-    firebase
-      .database()
+
+    database()
       .ref('users')
       .on('value', (dataSnapshot) => {
         let users = [];
@@ -56,13 +56,14 @@ const Home = ({navigation}) => {
     const photo = allUs.photo;
     const status = allUs.status;
     navigation.navigate('Chatting', {
-      id,
+      receiver: id,
+      // id,
       name,
       photo,
       status,
-      userId: userId,
-      username: currentUser.name,
-      userPhoto: currentUser.photo,
+      senderID: userId,
+      senderName: currentUser.name,
+      senderPhoto: currentUser.photo,
     });
   };
 

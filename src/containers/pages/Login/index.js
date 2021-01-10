@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
-import firebase from 'firebase';
-
+import firebase from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 const Login = () => {
   const navigation = useNavigation();
 
@@ -51,18 +51,16 @@ const Login = () => {
 
   const onLogin = async () => {
     setLoading(true);
-    await firebase
-      .auth()
+    await firebase()
       .signInWithEmailAndPassword(email, password)
       .then(async () => {
-        const uid = firebase.auth().currentUser.uid;
-        await firebase
-          .database()
+        const uid = firebase().currentUser.uid;
+        await database()
           .ref(`users/${uid}`)
           .update({status: 'Online', date: new Date().getTime()});
         storeData(uid);
         setLoading(false);
-        navigation.navigate('Loading');
+        navigation.replace('Profile');
       })
       .catch((error) => {
         setErrorMessage(error.message);

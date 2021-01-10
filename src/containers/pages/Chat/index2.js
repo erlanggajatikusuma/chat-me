@@ -1,5 +1,13 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {StyleSheet, Text, TextInput, View, Image, Button} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  FlatList,
+  Button,
+} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -11,99 +19,47 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Chat = () => {
   const route = useRoute();
 
-  const {
-    receiver,
-    name,
-    photo,
-    status,
-    senderID,
-    senderName,
-    senderPhoto,
-  } = route.params;
+  const {id, name, photo, status, userId, username, userPhoto} = route.params;
 
   const imgName = route.params.name;
 
-  const [loading, setLoading] = useState(false);
+  const [friendUID, setFriendUID] = useState('');
+  const [friendName, setFriendName] = useState('');
+  const [friendUrl, setFriendUrl] = useState('');
+  const [friendStatus, setFriendStatus] = useState('');
 
-  const [state, setState] = useState({
-    messages: [],
-    receiver: receiver,
-    receiverDetail: [],
-  });
+  const [loading, setLoading] = useState(false);
 
   // GiftedChat
 
   const user = {
-    _id: senderID,
-    name: senderName,
-    avatar: senderPhoto,
+    _id: userId,
+    name: username,
+    avatar: userPhoto,
   };
 
-  const getChat = async () => {
-    const uid = await AsyncStorage.getItem('uid');
-    database()
-      .ref(`chat/${uid}/${receiver}`)
-      .on('child_added', async (snapshot) => {
-        setState((previousMessages) => ({
-          ...state,
-          messages: GiftedChat.append(
-            previousMessages.messages,
-            snapshot.val(),
-          ),
-        }));
-      });
+  const otherUser = {
+    _id: id,
+    name: name,
+    avatar: photo,
   };
 
-  const handleReceiver = () => {
-    database()
-      .ref('users')
-      .orderByChild('uid')
-      .equalTo(state.receiver)
-      .on('value', (snapshot) => {
-        setState({
-          ...state,
-          receiverDetail: snapshot.val(),
-        });
-        const initData = [];
-        Object.keys(snapshot.val()).map((key) => {
-          initData.push({
-            data: snapshot.val()[key],
-          });
-        });
-        setState({
-          ...state,
-          receiverDetail: initData[0].data,
-        });
-      });
+  const [messages, setMessages] = useState([]);
+
+  const onSend = (messages) => {
+    const ref = database().ref(`/chat/${userId}/${id}`);
+    ref.push({
+      messages: {
+        _id: Math.floor(Math.random() * 10000000000000) + 1,
+        text: messages[0].text,
+        createdAt: database.ServerValue.TIMESTAMP,
+        user: user,
+      },
+    });
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, messages),
+    );
   };
-
-  const onSend = async (messages = []) => {
-    const message = {
-      _id: Math.random().toString(36).substring(2),
-      text: messages[0].text,
-      user: messages[0].user,
-      createdAt: database.ServerValue.TIMESTAMP,
-    };
-
-    await database().ref(`chat/${senderID}/${receiver}`).push(message);
-    await database().ref(`chat/${receiver}/${senderID}`).push(message);
-  };
-  // const [messages, setMessages] = useState([]);
-
-  // const onSend = (messages) => {
-  //   const ref = database().ref(`/chat/${userId}/${id}`);
-  //   ref.push({
-  //     messages: {
-  //       _id: Math.floor(Math.random() * 10000000000000) + 1,
-  //       text: messages[0].text,
-  //       createdAt: database.ServerValue.TIMESTAMP,
-  //       user: user,
-  //     },
-  //   });
-  //   setMessages((previousMessages) =>
-  //     GiftedChat.append(previousMessages, messages),
-  //   );
-  // };
 
   const fetchMsgs = async () => {
     try {
@@ -133,10 +89,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    getChat();
-    handleReceiver();
+    console.log('friend id param: ', route.params.id);
+    console.log('user id params: ', route.params.userId);
 
-    // fetchMsgs();
+    fetchMsgs();
   }, []);
 
   return (
@@ -164,14 +120,10 @@ const Chat = () => {
       </View>
       <View style={{flex: 1}}>
         <GiftedChat
-          messages={state.messages}
+          messages={messages}
           onSend={(messages) => onSend(messages)}
           user={user}
           scrollToBottom
-        />
-        <Button
-          title="Try"
-          onPress={() => console.log('messages: ', state.messages)}
         />
       </View>
       {/* <View style={styles.inputWrapper}>
@@ -188,7 +140,8 @@ const Chat = () => {
             onPress={() => console.log('Sending')}
           />
         </View>
-      </View> */}
+      </View>
+       */}
     </View>
   );
 };

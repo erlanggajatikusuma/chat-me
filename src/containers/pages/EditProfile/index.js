@@ -17,7 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import firebase from 'firebase';
+import firebase from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import Loader from '../../../components/atom/Loader';
 import Geolocation from 'react-native-geolocation-service';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -72,9 +73,9 @@ const EditProfile = () => {
   // const [specificData, setSpecificData] = useState({});
 
   const getUser = async () => {
-    const uid = firebase.auth().currentUser.uid;
+    const uid = firebase().currentUser.uid;
 
-    const user = firebase.database().ref(`users/${uid}`);
+    const user = database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
       console.log('user snapshot:', snapshot.val());
       // setSpecificData(snapshot.val());
@@ -150,8 +151,7 @@ const EditProfile = () => {
       console.log('longitude: ', state.longitude);
     } else {
       const dOB = dob.toDateString();
-      await firebase
-        .database()
+      await database()
         .ref(`users/${uid}`)
         .update({
           name: username,

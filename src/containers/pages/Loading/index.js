@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firebase from 'firebase';
+// import firebase from 'firebase';
 import {useNavigation} from '@react-navigation/native';
 
 const Loading = ({navigation}) => {
@@ -24,7 +24,7 @@ const Loading = ({navigation}) => {
         console.log('get uid storage: ', res);
         navigation.replace(res ? 'Profile' : 'Login');
       });
-    }, 3000);
+    }, 100);
   }, [navigation]);
 
   return (

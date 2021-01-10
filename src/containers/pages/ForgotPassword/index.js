@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import firebase from 'firebase';
+import firebase from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
 import Loader from '../../../components/atom/Loader';
 
@@ -20,7 +20,7 @@ const ForgotPassword = () => {
 
   const handleForgot = () => {
     setTimeout(() => {
-      const auth = firebase.auth();
+      const auth = firebase();
       auth
         .sendPasswordResetEmail(email)
         .then(() => {

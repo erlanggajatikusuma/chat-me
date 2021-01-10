@@ -13,8 +13,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SettingImg from '../../../assets/icon/Settings.svg';
-import firebase from '../../../config/firebase/config';
+// import firebase from '../../../config/firebase/config';
+import firebase from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 import {useNavigation} from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import Loader from '../../../components/atom/Loader';
 
 const Profile = () => {
@@ -38,11 +41,10 @@ const Profile = () => {
   };
 
   const signOut = async () => {
-    const uid = firebase.auth().currentUser.uid;
+    const uid = firebase().currentUser.uid;
 
-    await firebase.database().ref(`users/${uid}`).update({status: 'Offline'});
-    firebase
-      .auth()
+    await database().ref(`users/${uid}`).update({status: 'Offline'});
+    firebase()
       .signOut()
       .then(() => {
         removeValue();
@@ -51,7 +53,12 @@ const Profile = () => {
         setStatus('');
         setDob('');
         setPhoto('');
-        navigation.navigate('Login');
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+          }),
+        );
       });
   };
 
@@ -68,8 +75,7 @@ const Profile = () => {
     try {
       const uid = await AsyncStorage.getItem('uid');
 
-      firebase
-        .database()
+      database()
         .ref(`users/${uid}`)
         .on('value', async (dataSnapshot) => {
           const snapshot = await dataSnapshot.val();
