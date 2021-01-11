@@ -9,12 +9,13 @@ import {
   Home,
   Loading,
   Login,
+  Map,
   Profile,
   Register,
   SplashScreen,
 } from '../../containers/pages';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Button, View} from 'react-native';
 // import {createDrawerNavigator} from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
@@ -50,6 +51,10 @@ const ForgotScreen = () => {
 
 const ChatScreen = (props) => {
   return <Chat navigation={props.navigation} />;
+};
+
+const MapScreen = (props) => {
+  return <Map navigation={props.navigation} />;
 };
 
 const ChatStack = createStackNavigator();
@@ -96,6 +101,8 @@ const TabNavigators = () => {
             iconName = 'home';
           } else if (route.name === 'Chat') {
             iconName = 'comments';
+          } else if (route.name === 'Map') {
+            iconName = 'map-marked-alt';
           }
           // You can return any component that you like here!
           return <Icon name={iconName} size={20} color={color} />;
@@ -111,6 +118,7 @@ const TabNavigators = () => {
         options={{headerShown: false}}
       />
       <Tab.Screen name="Profile" component={ProfileStackScreen} />
+      <Tab.Screen name="Map" component={MapScreen} />
     </Tab.Navigator>
   );
 };

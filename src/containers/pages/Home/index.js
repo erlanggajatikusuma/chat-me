@@ -51,7 +51,6 @@ const Home = ({navigation}) => {
 
   const toChat = async (allUs) => {
     const id = allUs.id;
-    // const name = allUs.username;
     const name = allUs.name;
     const photo = allUs.photo;
     const status = allUs.status;

@@ -179,15 +179,11 @@ const EditProfile = () => {
       Geolocation.getCurrentPosition(
         (position) => {
           console.log(position);
-          // console.log('latitude: ', position.coords.latitude.toString());
-          // console.log('longitude: ', position.coords.longitude.toString());
           setState({
             ...state,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
           });
-          // setLatitude(position.coords.latitude);
-          // setLongitude(position.coords.longitude);
         },
         (error) => {
           // See error code charts below.

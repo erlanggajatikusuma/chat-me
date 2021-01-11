@@ -7,6 +7,7 @@ import ForgotPassword from './ForgotPassword';
 import EditProfile from './EditProfile';
 import SplashScreen from './Splash';
 import Loading from './Loading';
+import Map from './Map';
 
 export {
   Chat,
@@ -18,4 +19,5 @@ export {
   EditProfile,
   SplashScreen,
   Loading,
+  Map,
 };
