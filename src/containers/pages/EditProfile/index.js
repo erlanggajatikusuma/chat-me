@@ -12,6 +12,7 @@ import {
   ToastAndroid,
   Alert,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -58,11 +59,11 @@ const EditProfile = () => {
 
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState('');
+  const [photoDB, setPhotoDb] = useState('');
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('Male');
   const [dob, setDob] = useState('');
-  // const [lastPosition, setLastPosition] = useState('');
   const [state, setState] = useState({
     latitude: '',
     longitude: '',
@@ -86,39 +87,37 @@ const EditProfile = () => {
 
   const options = {
     mediaType: 'photo',
-    maxWidth: 70,
-    maxHeight: 70,
+    maxWidth: 700,
+    maxHeight: 700,
     quality: 1,
+    includeBase64: true,
     saveToPhotos: true,
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
   };
 
   const takeImage = () => {
-    const granted = PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA,
+    launchCamera(
       {
-        title: 'ReactNativeCode Camera Permission',
-        message: 'ReactNativeCode App needs access to your Camera ',
+        mediaType: 'photo',
+        includeBase64: true,
+        maxHeight: 700,
+        maxWidth: 700,
+        quality: 1,
       },
-    );
-    if (granted) {
-      launchCamera(options, (response) => {
-        console.log(response);
+      (response) => {
         if (response.didCancel) {
           console.log('User Cancelled image picker');
         } else if (response.error) {
           console.log('ImagePicker Error: ', response.error);
+          alert(response.error);
         } else {
           bs.current.snapTo(1);
           let source = response.uri;
-          console.log(source);
-          // setPhoto(source);
+          const base64Photo = `data:${response.type};base64,${response.base64}`;
+          setPhoto(source);
+          setPhotoDb(base64Photo);
         }
-      });
-    }
+      },
+    );
   };
 
   const chooseFromLibrary = () => {
@@ -129,20 +128,20 @@ const EditProfile = () => {
         console.log('ImagePicker Error: ', response.error);
       } else {
         bs.current.snapTo(1);
-        const uri = response.uri;
-        setPhoto(uri);
-        // console.log('uri img: ', uri);
-        // const source = {uri: response.uri};
-        // setPhoto(source);
-        // console.log('uri: ', source);
+        let source = response.uri;
+        const base64Photo = `data:${response.type};base64,${response.base64}`;
+        setPhoto(source);
+        setPhotoDb(base64Photo);
       }
     });
   };
 
   const updateUser = async () => {
+    setLoading(true);
     const uid = await AsyncStorage.getItem('uid');
     if (dob === '') {
       alert('Date of Birth empty');
+      setLoading(false);
     } else {
       const dOB = dob.toDateString();
       await database()
@@ -150,7 +149,7 @@ const EditProfile = () => {
         .update({
           name: username,
           phone: phoneNumber,
-          photo: photo,
+          photo: photoDB,
           gender: gender,
           dateOfBirth: dOB,
           latitude: state.latitude,
@@ -164,7 +163,10 @@ const EditProfile = () => {
           );
           navigation.replace('Profile');
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
     }
   };
   useEffect(() => {
@@ -173,6 +175,7 @@ const EditProfile = () => {
       {
         title: 'ReactNativeCode Location Permission',
         message: 'ReactNativeCode App needs access to your location ',
+        buttonPositive: 'OK',
       },
     );
     if (granted) {
@@ -191,19 +194,11 @@ const EditProfile = () => {
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
-      // this.watchID = Geolocation.watchPosition((lastPosition) => {
-      //   setState({
-      //     ...state,
-      //     lastPosition: lastPosition,
-      //   });
-      //   console.log(lastPosition);
-      // });
     }
     getUser();
 
     return () => {
       null;
-      // Geolocation.clearWatch(this.watchID);
     };
   }, []);
 
@@ -243,146 +238,142 @@ const EditProfile = () => {
 
   return (
     <>
-      {loading ? (
-        <Loader animating={loading} />
-      ) : (
-        <View style={styles.container}>
-          <BottomSheet
-            ref={bs}
-            snapPoints={[330, 0]}
-            renderContent={renderInner}
-            renderHeader={renderHeader}
-            initialSnap={1}
-            callbackNode={fall}
-            enabledGestureInteraction={true}
-          />
-          <Animated.View
-            style={{
-              margin: 20,
-              opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
-            }}>
-            <View style={{alignItems: 'center', paddingBottom: 25}}>
-              <View style={styles.photoBgWrapper}>
-                {photo ? (
-                  <ImageBackground
-                    source={{uri: photo}}
-                    style={{height: 100, width: 100}}
-                    imageStyle={{borderRadius: 15}}>
-                    <View
+      <View style={styles.container}>
+        <BottomSheet
+          ref={bs}
+          snapPoints={[330, 0]}
+          renderContent={renderInner}
+          renderHeader={renderHeader}
+          initialSnap={1}
+          callbackNode={fall}
+          enabledGestureInteraction={true}
+        />
+        <Animated.View
+          style={{
+            margin: 20,
+            opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
+          }}>
+          <View style={{alignItems: 'center', paddingBottom: 25}}>
+            <View style={styles.photoBgWrapper}>
+              {photo ? (
+                <ImageBackground
+                  source={{uri: photo}}
+                  style={{height: 100, width: 100}}
+                  imageStyle={{borderRadius: 15}}>
+                  {/* <View
                       style={{
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}
-                    />
-                  </ImageBackground>
-                ) : (
-                  <View style={styles.textImgWrapper}>
-                    <Text style={styles.textImg}>{username.split(' ', 1)}</Text>
-                  </View>
-                )}
+                    /> */}
+                </ImageBackground>
+              ) : (
+                <View style={styles.textImgWrapper}>
+                  <Text style={styles.textImg}>{username.split(' ', 1)}</Text>
+                </View>
+              )}
 
-                <TouchableOpacity
-                  onPress={() => bs.current.snapTo(0)}
-                  style={{
-                    position: 'absolute',
-                    bottom: -5,
-                    left: 80,
-                  }}>
-                  <Image source={IconCamera} width={5} height={5} />
-                </TouchableOpacity>
-              </View>
-              <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-                {username}
+              <TouchableOpacity
+                onPress={() => bs.current.snapTo(0)}
+                style={{
+                  position: 'absolute',
+                  bottom: -5,
+                  left: 80,
+                }}>
+                <Image source={IconCamera} width={5} height={5} />
+              </TouchableOpacity>
+            </View>
+            <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
+              {username}
+            </Text>
+          </View>
+
+          <View style={styles.action}>
+            <View style={{width: 90}}>
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>Name</Text>
+            </View>
+            <TextInput
+              placeholder="Name"
+              placeholderTextColor="#666666"
+              value={username}
+              onChangeText={(text) => setUsername(text)}
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+            />
+          </View>
+          <View style={styles.action}>
+            <View style={{width: 90}}>
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>Gender</Text>
+            </View>
+            <Picker
+              selectedValue={gender}
+              // style={{height: 50, width: 150}}
+              style={styles.textInput}
+              onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
+              <Picker.Item label="Male" value="Male" />
+              <Picker.Item label="Female" value="Female" />
+            </Picker>
+          </View>
+          <View style={styles.action}>
+            <View style={{width: 90}}>
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>Phone</Text>
+            </View>
+            <TextInput
+              onChangeText={(num) => setPhoneNumber(num)}
+              value={phoneNumber}
+              placeholder="Phone"
+              placeholderTextColor="#666666"
+              keyboardType="number-pad"
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+            />
+          </View>
+          <View style={styles.action}>
+            <View style={{width: 90}}>
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+                Date of Birth
               </Text>
             </View>
-
-            <View style={styles.action}>
-              <View style={{width: 90}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Name</Text>
-              </View>
-              <TextInput
-                placeholder="Name"
-                placeholderTextColor="#666666"
-                value={username}
-                onChangeText={(text) => setUsername(text)}
-                autoCorrect={false}
-                style={[
-                  styles.textInput,
-                  {
-                    color: colors.text,
-                  },
-                ]}
+            <View>
+              <TouchableOpacity onPress={showDatepicker}>
+                {dob ? (
+                  <Text>{dob.toDateString()}</Text>
+                ) : (
+                  <Text style={{paddingLeft: 9}}>Choose</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display="default"
+                onChange={onChange}
               />
-            </View>
-            <View style={styles.action}>
-              <View style={{width: 90}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Gender</Text>
-              </View>
-              <Picker
-                selectedValue={gender}
-                // style={{height: 50, width: 150}}
-                style={styles.textInput}
-                onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
-                <Picker.Item label="Male" value="Male" />
-                <Picker.Item label="Female" value="Female" />
-              </Picker>
-            </View>
-            <View style={styles.action}>
-              <View style={{width: 90}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Phone</Text>
-              </View>
-              <TextInput
-                onChangeText={(num) => setPhoneNumber(num)}
-                value={phoneNumber}
-                placeholder="Phone"
-                placeholderTextColor="#666666"
-                keyboardType="number-pad"
-                autoCorrect={false}
-                style={[
-                  styles.textInput,
-                  {
-                    color: colors.text,
-                  },
-                ]}
-              />
-            </View>
-            <View style={styles.action}>
-              <View style={{width: 90}}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-                  Date of Birth
-                </Text>
-              </View>
-              <View>
-                <TouchableOpacity onPress={showDatepicker}>
-                  {dob ? (
-                    <Text>{dob.toDateString()}</Text>
-                  ) : (
-                    <Text style={{paddingLeft: 9}}>Choose</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-              {show && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode}
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                />
-              )}
-            </View>
+            )}
+          </View>
+          {loading ? (
+            <Text>Loading ....</Text>
+          ) : (
             <TouchableOpacity style={styles.commandButton} onPress={updateUser}>
               <Text style={styles.panelButtonTitle}>Submit</Text>
             </TouchableOpacity>
-            <Button
-              title="try"
-              onPress={() => console.log('Gender:', gender)}
-            />
-          </Animated.View>
-        </View>
-      )}
+          )}
+        </Animated.View>
+      </View>
     </>
   );
 };

@@ -108,7 +108,7 @@ const Profile = () => {
               </View>
             )}
             <View style={styles.profileWrapper}>
-              <Text style={{fontSize: 20, fontWeight: 'bold'}}>{name}</Text>
+              <Text style={{fontSize: 24, fontWeight: 'bold'}}>{name}</Text>
               <Text>{email}</Text>
               <Text>{status}</Text>
             </View>
@@ -219,8 +219,6 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 70 / 2,
-    borderWidth: 1,
-    borderColor: 'black',
   },
   textImg: {
     width: 70,
@@ -232,9 +230,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   profileWrapper: {
-    // backgroundColor: '#12b3cc',
     flex: 1,
-    paddingVertical: 10,
     paddingHorizontal: 15,
   },
 });
