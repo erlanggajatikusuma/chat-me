@@ -75,6 +75,9 @@ const Profile = () => {
           setDob(snapshot.dateOfBirth);
           setPhoto(snapshot.photo);
           setPhone(snapshot.phone);
+          if (snapshot.photo === '') {
+            navigation.replace('Edit');
+          }
         });
     } catch (error) {
       console.log(error);
@@ -89,108 +92,101 @@ const Profile = () => {
 
   return (
     <>
-      {loading ? (
-        <Loader animating={loading} />
-      ) : (
-        <>
-          <View style={styles.header}>
-            <Text style={styles.textHeader}>Profile</Text>
+      <View style={styles.header}>
+        <Text style={styles.textHeader}>Profile</Text>
+      </View>
+      <View style={{flexDirection: 'row', paddingLeft: 15, paddingTop: 20}}>
+        {photo ? (
+          <Image source={{uri: photo}} style={styles.imgStyle} />
+        ) : (
+          <View style={styles.textImg}>
+            <Text style={{color: 'white'}}>{name.split(' ', 1)}</Text>
           </View>
-          <View style={{flexDirection: 'row', paddingLeft: 15, paddingTop: 20}}>
-            {photo ? (
-              <Image source={{uri: photo}} style={styles.imgStyle} />
-            ) : (
-              <View style={styles.textImg}>
-                <Text style={{color: 'white'}}>{name.split(' ', 1)}</Text>
-              </View>
-            )}
-            <View style={styles.profileWrapper}>
-              <Text style={{fontSize: 24, fontWeight: 'bold'}}>{name}</Text>
-              <Text>{email}</Text>
-              <Text>{status}</Text>
-            </View>
-          </View>
-          <View
-            style={{paddingLeft: 15, paddingTop: 34, backgroundColor: 'pink'}}>
-            <Text style={{fontSize: 19, fontWeight: 'bold'}}>Account</Text>
-            <Text>{phone}</Text>
-            <Text>Location</Text>
-          </View>
-          <View
+        )}
+        <View style={styles.profileWrapper}>
+          <Text style={{fontSize: 24, fontWeight: 'bold'}}>{name}</Text>
+          <Text>{email}</Text>
+          <Text>{status}</Text>
+        </View>
+      </View>
+      <View style={{paddingLeft: 15, paddingTop: 34, backgroundColor: 'pink'}}>
+        <Text style={{fontSize: 19, fontWeight: 'bold'}}>Account</Text>
+        <Text>{phone}</Text>
+        <Text>Location</Text>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 10,
+        }}>
+        <TouchableHighlight
+          style={{
+            height: 40,
+            width: 40,
+            backgroundColor: '#FAF8F0',
+            elevation: 4,
+            borderRadius: 50,
+            justifyContent: 'center',
+            marginBottom: 5,
+          }}
+          underlayColor="white"
+          activeOpacity={0.5}>
+          <Icon
+            name="birthday-cake"
+            style={{alignSelf: 'center'}}
+            size={23}
+            color="pink"
+          />
+        </TouchableHighlight>
+        <Text style={{fontSize: 16, letterSpacing: 0.5, color: 'gray'}}>
+          {dob}
+        </Text>
+      </View>
+      <View>
+        <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
+          <SettingImg width={25} height={25} />
+        </TouchableOpacity>
+      </View>
+      <View />
+      <View>
+        <TouchableOpacity
+          onPress={() =>
+            Alert.alert(
+              'Logout',
+              'Are you sure ?',
+              [
+                {
+                  text: 'Yes',
+                  onPress: () => signOut(),
+                },
+                {
+                  text: 'No',
+                },
+                ,
+              ],
+              {
+                cancelable: false,
+              },
+            )
+          }
+          style={{
+            borderWidth: 1,
+            borderColor: 'lightblue',
+            backgroundColor: 'blue',
+            borderRadius: 9,
+            marginHorizontal: 70,
+          }}>
+          <Text
             style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: 10,
+              textAlign: 'center',
+              paddingVertical: 10,
+              color: 'white',
             }}>
-            <TouchableHighlight
-              style={{
-                height: 40,
-                width: 40,
-                backgroundColor: '#FAF8F0',
-                elevation: 4,
-                borderRadius: 50,
-                justifyContent: 'center',
-                marginBottom: 5,
-              }}
-              underlayColor="white"
-              activeOpacity={0.5}>
-              <Icon
-                name="birthday-cake"
-                style={{alignSelf: 'center'}}
-                size={23}
-                color="pink"
-              />
-            </TouchableHighlight>
-            <Text style={{fontSize: 16, letterSpacing: 0.5, color: 'gray'}}>
-              {dob}
-            </Text>
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
-              <SettingImg width={25} height={25} />
-            </TouchableOpacity>
-          </View>
-          <View />
-          <View>
-            <TouchableOpacity
-              onPress={() =>
-                Alert.alert(
-                  'Logout',
-                  'Are you sure ?',
-                  [
-                    {
-                      text: 'Yes',
-                      onPress: () => signOut(),
-                    },
-                    {
-                      text: 'No',
-                    },
-                    ,
-                  ],
-                  {
-                    cancelable: false,
-                  },
-                )
-              }
-              style={{
-                borderWidth: 1,
-                borderColor: 'lightblue',
-                backgroundColor: 'blue',
-                borderRadius: 9,
-                marginHorizontal: 70,
-              }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  paddingVertical: 10,
-                  color: 'white',
-                }}>
-                Logout
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
     </>
   );
 };

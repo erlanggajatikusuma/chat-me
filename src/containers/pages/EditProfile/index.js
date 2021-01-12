@@ -139,6 +139,10 @@ const EditProfile = () => {
     if (dob === '') {
       alert('Date of Birth empty');
       setLoading(false);
+    } else if (photo === '') {
+      console.log('photo  kosong woy');
+      alert('Photo empty');
+      setLoading(false);
     } else {
       await database()
         .ref(`users/${uid}`)
