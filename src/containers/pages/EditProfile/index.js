@@ -10,9 +10,8 @@ import {
   Platform,
   PermissionsAndroid,
   ToastAndroid,
-  Alert,
-  Button,
   ActivityIndicator,
+  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -20,11 +19,9 @@ import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firebase from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import Loader from '../../../components/atom/Loader';
 import Geolocation from 'react-native-geolocation-service';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import IconCamera from '../../../assets/icon/camera3.png';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {useTheme} from 'react-native-paper';
 
@@ -40,12 +37,9 @@ const EditProfile = () => {
   const [show, setShow] = useState(false);
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    // const convert = date.toDateString();
-    // const currentDate = selectedDate || convert;
-    currentDate.toDateString();
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
-    setDob(currentDate);
+    setDob(currentDate.toDateString());
   };
 
   const showMode = (currentMode) => {
@@ -59,11 +53,12 @@ const EditProfile = () => {
 
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState('');
-  const [photoDB, setPhotoDb] = useState('');
+  // const [photoDB, setPhotoDb] = useState('');
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('Male');
   const [dob, setDob] = useState('');
+  // const [dobDB, setDobDB] = useState('');
   const [state, setState] = useState({
     latitude: '',
     longitude: '',
@@ -75,13 +70,16 @@ const EditProfile = () => {
 
     const user = database().ref(`users/${uid}`);
     user.on('value', (snapshot) => {
-      console.log('user snapshot:', snapshot.val());
       setUsername(snapshot.val() !== null ? snapshot.val().name : '');
       setPhoneNumber(snapshot.val() !== null ? snapshot.val().phone : '');
       setGender(snapshot.val().gender);
       setPhoto(snapshot.val() !== null ? snapshot.val().photo : '');
-      // setDob(snapshot.val() !== null ? snapshot.val().dateOfBirth : '');
-      // setLoading(true);
+      setDob(snapshot.val().dateOfBirth);
+      setState({
+        ...state,
+        latitude: snapshot.val().latitude,
+        longitude: snapshot.val().longitude,
+      });
     });
   };
 
@@ -113,8 +111,8 @@ const EditProfile = () => {
           bs.current.snapTo(1);
           let source = response.uri;
           const base64Photo = `data:${response.type};base64,${response.base64}`;
-          setPhoto(source);
-          setPhotoDb(base64Photo);
+          // setPhoto(source);
+          setPhoto(base64Photo);
         }
       },
     );
@@ -130,8 +128,7 @@ const EditProfile = () => {
         bs.current.snapTo(1);
         let source = response.uri;
         const base64Photo = `data:${response.type};base64,${response.base64}`;
-        setPhoto(source);
-        setPhotoDb(base64Photo);
+        setPhoto(base64Photo);
       }
     });
   };
@@ -143,15 +140,14 @@ const EditProfile = () => {
       alert('Date of Birth empty');
       setLoading(false);
     } else {
-      const dOB = dob.toDateString();
       await database()
         .ref(`users/${uid}`)
         .update({
           name: username,
           phone: phoneNumber,
-          photo: photoDB,
+          photo: photo,
           gender: gender,
-          dateOfBirth: dOB,
+          dateOfBirth: dob,
           latitude: state.latitude,
           longitude: state.longitude,
         })
@@ -181,7 +177,7 @@ const EditProfile = () => {
     if (granted) {
       Geolocation.getCurrentPosition(
         (position) => {
-          console.log(position);
+          console.log('Postition: ', position);
           setState({
             ...state,
             latitude: position.coords.latitude,
@@ -341,14 +337,12 @@ const EditProfile = () => {
           </View>
           <View style={styles.action}>
             <View style={{width: 90}}>
-              <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-                Date of Birth
-              </Text>
+              <Text style={{fontSize: 15, fontWeight: 'bold'}}>Birth Date</Text>
             </View>
             <View>
               <TouchableOpacity onPress={showDatepicker}>
                 {dob ? (
-                  <Text>{dob.toDateString()}</Text>
+                  <Text>{dob}</Text>
                 ) : (
                   <Text style={{paddingLeft: 9}}>Choose</Text>
                 )}
@@ -401,7 +395,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#c7c9c9',
   },
   textImg: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#364447',
   },

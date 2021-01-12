@@ -13,7 +13,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SettingImg from '../../../assets/icon/Settings.svg';
-// import firebase from '../../../config/firebase/config';
 import firebase from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {useNavigation} from '@react-navigation/native';
@@ -76,7 +75,6 @@ const Profile = () => {
           setDob(snapshot.dateOfBirth);
           setPhoto(snapshot.photo);
           setPhone(snapshot.phone);
-          // console.log(snapshot);
         });
     } catch (error) {
       console.log(error);
@@ -86,7 +84,6 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    // setLoading(true);
     getUser();
   }, []);
 
@@ -153,7 +150,6 @@ const Profile = () => {
               <SettingImg width={25} height={25} />
             </TouchableOpacity>
           </View>
-          {/* <Button title="Try" onPress={removeValue} /> */}
           <View />
           <View>
             <TouchableOpacity
@@ -203,7 +199,6 @@ export default Profile;
 
 const styles = StyleSheet.create({
   header: {
-    // backgroundColor: '#6662f5',
     backgroundColor: '#6c68ed',
     height: 50,
     justifyContent: 'center',
