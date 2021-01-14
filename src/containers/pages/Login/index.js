@@ -6,11 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import firebase from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+
 const Login = () => {
   const navigation = useNavigation();
 
@@ -84,7 +86,7 @@ const Login = () => {
         </View>
 
         {loading ? (
-          <Text>Loading ....</Text>
+          <ActivityIndicator size={40} color="#0066ff" />
         ) : (
           <TouchableOpacity onPress={onLogin} style={styles.loginBtn}>
             <Text style={styles.loginText}>LOGIN</Text>
