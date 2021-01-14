@@ -9,109 +9,165 @@ import {
   Home,
   Loading,
   Login,
+  Map,
   Profile,
   Register,
   SplashScreen,
 } from '../../containers/pages';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import {Button, View} from 'react-native';
 // import {createDrawerNavigator} from '@react-navigation/drawer';
 // const Drawer = createDrawerNavigator();
 
-const Tab = createMaterialBottomTabNavigator();
-const Stack = createStackNavigator();
-
-function HomeTab() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
-      {/* <Tab.Screen name="Profile" component={ProfileStack} /> */}
-      <Tab.Screen name="Profile" component={ProfileStack} options={
-        
-      } />
-    </Tab.Navigator>
-  );
-}
-
-const HomeScreen = (props) => {
+const ChatListScreen = (props) => {
   return <Home navigation={props.navigation} />;
 };
-const EditStack = () => {
+const EditScreen = () => {
   return <EditProfile />;
 };
-const ProfileStack = () => {
+const ProfileScreen = () => {
   return <Profile />;
 };
 
-const LoadingStack = () => {
-  return <Loading />;
+const LoadingScreen = (props) => {
+  return <Loading navigation={props.navigation} />;
 };
-const SplashStack = () => {
+const SplashScreens = () => {
   return <SplashScreen />;
 };
 
-const RegisterStack = () => {
-  return <Register />;
+const RegisterScreen = (props) => {
+  return <Register navigation={props.navigation} />;
 };
 
-const LoginStack = () => {
-  return <Login />;
+const LoginScreen = (props) => {
+  return <Login navigation={props.navigation} />;
 };
 
-const ForgotStack = () => {
+const ForgotScreen = () => {
   return <ForgotPassword />;
 };
 
-const ChatStack = (props) => {
+const ChatScreen = (props) => {
   return <Chat navigation={props.navigation} />;
 };
 
+const MapScreen = (props) => {
+  return <Map navigation={props.navigation} />;
+};
+
+const ChatStack = createStackNavigator();
+const ChatStackScreen = () => {
+  return (
+    <ChatStack.Navigator>
+      <ChatStack.Screen
+        name="Chat"
+        component={ChatListScreen}
+        options={{headerShown: false}}
+      />
+      <ChatStack.Screen
+        name="Chatting"
+        component={ChatScreen}
+        options={{headerShown: false}}
+      />
+    </ChatStack.Navigator>
+  );
+};
+
+const ProfileStack = createStackNavigator();
+const ProfileStackScreen = () => {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{headerShown: false}}
+      />
+      <ProfileStack.Screen name="Edit" component={EditScreen} />
+    </ProfileStack.Navigator>
+  );
+};
+
+const Tab = createMaterialBottomTabNavigator();
+const TabNavigators = () => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Profile"
+      activeColor="#0066ff"
+      inactiveColor="#a1a4e3"
+      screenOptions={({route}) => ({
+        tabBarIcon: ({color, size}) => {
+          let iconName;
+          if (route.name === 'Profile') {
+            iconName = 'home';
+          } else if (route.name === 'Chat') {
+            iconName = 'comments';
+          } else if (route.name === 'Map') {
+            iconName = 'map-marked-alt';
+          }
+          // You can return any component that you like here!
+          return <Icon name={iconName} size={20} color={color} />;
+        },
+      })}
+      // tabBarOptions={{
+      //   activeTintColor: 'tomato',
+      //   inactiveTintColor: 'gray',
+      // }}
+      barStyle={{backgroundColor: '#FFF'}}>
+      <Tab.Screen
+        name="Chat"
+        component={ChatStackScreen}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen name="Profile" component={ProfileStackScreen} />
+      <Tab.Screen name="Map" component={MapScreen} />
+    </Tab.Navigator>
+  );
+};
+
+const Stack = createStackNavigator();
 const Router = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Splash"
-        // screenOptions={{gestureEnabled: false}}
-      >
+        screenOptions={{gestureEnabled: false}}>
         <Stack.Screen
           name="Splash"
-          component={SplashStack}
+          component={SplashScreens}
           options={{headerShown: false}}
         />
+        {/* Tab Navigator */}
         <Stack.Screen
-          name="Register"
-          component={RegisterStack}
+          name="Profile"
+          options={{headerShown: false}}
+          component={TabNavigators}
+        />
+        {/* ====== */}
+        <Stack.Screen
+          name="Loading"
+          component={LoadingScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
           name="Login"
-          component={LoginStack}
+          component={LoginScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
           name="Forgot"
-          component={ForgotStack}
+          component={ForgotScreen}
           options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Home"
-          options={{headerShown: false}}
-          component={HomeTab}
         />
         <Stack.Screen
           name="Edit"
-          options={{headerShown: false}}
-          component={EditStack}
-        />
-        {/* <Stack.Screen name="Profile" component={ProfileStack} /> */}
-        <Stack.Screen
-          name="Chats"
-          component={ChatStack}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Loading"
-          component={LoadingStack}
+          component={EditScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

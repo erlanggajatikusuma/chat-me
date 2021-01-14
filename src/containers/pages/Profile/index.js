@@ -109,6 +109,7 @@ const Profile = () => {
   };
 
   const getUser = async () => {
+    setLoading(true);
     try {
       const uid = await AsyncStorage.getItem('uid');
 

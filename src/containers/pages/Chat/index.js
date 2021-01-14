@@ -86,8 +86,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
     getChat();
     // handleReceiver();
+    return () => (isMounted = false);
   }, []);
 
   return (
@@ -100,11 +102,7 @@ const Chat = () => {
         />
         {photo ? (
           <Image style={styles.imgHeader} source={{uri: photo}} />
-        ) : (
-          <View style={styles.textImg}>
-            <Text style={{color: 'white'}}>{imgName.split(' ', 1)}</Text>
-          </View>
-        )}
+        ) : null}
 
         <View>
           <Text style={{color: '#d5f7f6', fontSize: 20, fontWeight: 'bold'}}>

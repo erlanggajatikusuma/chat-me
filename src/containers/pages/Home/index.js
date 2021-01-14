@@ -1,15 +1,22 @@
 import React from 'react';
 import {useEffect, useState} from 'react';
-import {Button, ScrollView, Text, View} from 'react-native';
+import {
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import ChatThumb from '../../../components/molecules/ChatThumb';
-import SearchBar from '../../../components/molecules/SearchBar';
+import ContentLoader, {FacebookLoader} from 'react-native-easy-content-loader';
 
 const Home = ({navigation}) => {
   const userId = auth().currentUser.uid;
 
+  const [loading, setLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState({
     id: '',
     name: '',
@@ -20,7 +27,7 @@ const Home = ({navigation}) => {
 
   const getData = async () => {
     const uuid = await AsyncStorage.getItem('uid');
-
+    setLoading(true);
     database()
       .ref('users')
       .on('value', (dataSnapshot) => {
@@ -46,6 +53,7 @@ const Home = ({navigation}) => {
         });
         setCurrentUser(current);
         setAllUser(users);
+        setLoading(false);
       });
   };
 
@@ -72,9 +80,34 @@ const Home = ({navigation}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFF'}}>
+      <View style={styles.wrapper}>
+        <Text style={{fontSize: 24, fontWeight: 'bold', color: '#9aedeb'}}>
+          ChatMe
+        </Text>
+      </View>
       <ScrollView>
-        <SearchBar />
-        {allUser.length > 0 ? (
+        {loading ? (
+          <ActivityIndicator size={50} color="blue" />
+        ) : (
+          <>
+            {allUser.length > 0 ? (
+              <>
+                {allUser.map((allUs) => {
+                  return (
+                    <ChatThumb
+                      key={allUs.id}
+                      name={allUs.name}
+                      img={allUs.photo}
+                      status={allUs.status}
+                      toChat={() => toChat(allUs)}
+                    />
+                  );
+                })}
+              </>
+            ) : null}
+          </>
+        )}
+        {/* {allUser.length > 0 ? (
           <>
             {allUser.map((allUs) => {
               return (
@@ -83,7 +116,6 @@ const Home = ({navigation}) => {
                   name={allUs.name}
                   img={allUs.photo}
                   status={allUs.status}
-                  // toProfile={() => navigation.navigate('Display')}
                   toChat={() => toChat(allUs)}
                 />
               );
@@ -91,12 +123,22 @@ const Home = ({navigation}) => {
           </>
         ) : (
           <View>
-            <Text>Empty</Text>
+            <Text>Empt</Text>
           </View>
-        )}
+        )} */}
       </ScrollView>
     </View>
   );
 };
 
 export default Home;
+
+const styles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: '#0066ff',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+  },
+});

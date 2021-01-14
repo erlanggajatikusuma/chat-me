@@ -19,19 +19,7 @@ const ChatThumb = ({name, toProfile, toChat, img, status}) => {
               style={{width: 60, height: 60, borderRadius: 60 / 2}}
               resizeMode="cover"
             />
-          ) : (
-            <View
-              style={{
-                width: 60,
-                height: 60,
-                borderRadius: 60 / 2,
-                backgroundColor: 'black',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={{color: 'white'}}>{name.split(' ', 1)}</Text>
-            </View>
-          )}
+          ) : null}
         </TouchableOpacity>
       </View>
       <View style={{flex: 1, paddingLeft: 5}}>

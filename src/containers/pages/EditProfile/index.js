@@ -53,12 +53,10 @@ const EditProfile = () => {
 
   const [loading, setLoading] = useState(false);
   const [photo, setPhoto] = useState('');
-  // const [photoDB, setPhotoDb] = useState('');
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('Male');
   const [dob, setDob] = useState('');
-  // const [dobDB, setDobDB] = useState('');
   const [state, setState] = useState({
     latitude: '',
     longitude: '',
@@ -169,33 +167,26 @@ const EditProfile = () => {
         });
     }
   };
-  useEffect(() => {
-    const granted = PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'ReactNativeCode Location Permission',
-        message: 'ReactNativeCode App needs access to your location ',
-        buttonPositive: 'OK',
+
+  const updateLocation = () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log('Postition: ', position);
+        setState({
+          ...state,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
       },
+      (error) => {
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
-    if (granted) {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Postition: ', position);
-          setState({
-            ...state,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-      );
-    }
+  };
+  useEffect(() => {
     getUser();
+    updateLocation();
 
     return () => {
       null;
