@@ -7,29 +7,24 @@ import {
   TouchableOpacity,
   ScrollView,
   PermissionsAndroid,
-  Button,
   Alert,
-  ToastAndroid,
   TouchableHighlight,
   ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
-import SettingImg from '../../../assets/icon/Settings.svg';
 import firebase from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import {useNavigation} from '@react-navigation/native';
 import {CommonActions} from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
-import Loader from '../../../components/atom/Loader';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Profile = () => {
   const navigation = useNavigation();
 
   const [loading, setLoading] = useState(false);
-  const [uID, setUID] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [dob, setDob] = useState('');
@@ -116,10 +111,6 @@ const Profile = () => {
   const getUser = async () => {
     try {
       const uid = await AsyncStorage.getItem('uid');
-      // setUID(uid);
-      // database().ref(`users/${uid}`).update({
-      //   status: 'Online',
-      // });
 
       database()
         .ref(`users/${uid}`)
