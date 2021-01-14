@@ -5,7 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Permission,
+  ScrollView,
   PermissionsAndroid,
   Button,
   Alert,
@@ -77,31 +77,40 @@ const Profile = () => {
   const updateLocation = async () => {
     console.log('Pressed');
     setLoading(true);
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        await fetch(
-          `http://us1.locationiq.com/v1/reverse.php?key=68e73a2b14084c&lat=${state.latitude}&lon=${state.longitude}&format=json`,
-        )
-          .then((response) => response.json())
-          .then((json) => {
-            setState({
-              ...state,
-              address: json.display_name,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            });
-            setLoading(false);
-          });
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'ReactNativeCode Location Permission',
+        message: 'ReactNativeCode App needs access to your location ',
       },
-      (error) => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-        console.log('error loc: ', error);
-        alert(error.message);
-        setLoading(false);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
+    if (granted) {
+      Geolocation.getCurrentPosition(
+        async (position) => {
+          await fetch(
+            `http://us1.locationiq.com/v1/reverse.php?key=68e73a2b14084c&lat=${state.latitude}&lon=${state.longitude}&format=json`,
+          )
+            .then((response) => response.json())
+            .then((json) => {
+              setState({
+                ...state,
+                address: json.display_name,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              });
+              setLoading(false);
+            });
+        },
+        (error) => {
+          // See error code charts below.
+          console.log(error.code, error.message);
+          console.log('error loc: ', error);
+          alert(error.message);
+          setLoading(false);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    }
   };
 
   const getUser = async () => {
@@ -141,24 +150,13 @@ const Profile = () => {
 
   useEffect(() => {
     getUser();
-    // updateLocation();
+    updateLocation();
   }, []);
 
   return (
     <>
-      <View
-        style={{
-          flex: 2,
-          alignItems: 'center',
-          backgroundColor: '#0066ff',
-          paddingHorizontal: '3%',
-        }}>
-        <View
-          style={{
-            alignSelf: 'flex-end',
-            marginTop: '2%',
-            marginBottom: '4%',
-          }}>
+      <View style={styles.container}>
+        <View style={{alignSelf: 'flex-end', marginTop: '2%'}}>
           <TouchableOpacity onPress={() => navigation.navigate('Edit')}>
             <Icon2 name="dots-horizontal" size={30} color="white" />
           </TouchableOpacity>
@@ -171,41 +169,16 @@ const Profile = () => {
           </View>
         )}
         <View style={{marginTop: '1%'}}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              letterSpacing: 0.7,
-              color: '#e3fffa',
-            }}>
-            {name}
-          </Text>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: '#e3fffa',
-              fontSize: 15,
-              fontWeight: '600',
-            }}>
-            {status}
-          </Text>
+          <Text style={styles.textName}>{name}</Text>
+          <Text style={styles.textStatus}>{status}</Text>
         </View>
         <View style={{alignItems: 'center'}}>
           {loading ? (
-            <ActivityIndicator size={20} color="blue" />
+            <View style={{width: 50, height: 50, borderRadius: 50 / 2}}>
+              <ActivityIndicator size={50} color="white" />
+            </View>
           ) : (
-            <TouchableHighlight
-              onPress={updateLocation}
-              style={{
-                marginTop: '5%',
-                width: 50,
-                height: 50,
-                // backgroundColor: 'pink',
-                borderRadius: 50 / 2,
-                justifyContent: 'center',
-                elevation: 7,
-              }}>
+            <TouchableHighlight onPress={updateLocation} style={styles.marker}>
               <Icon
                 style={{alignSelf: 'center'}}
                 name="map-marker-alt"
@@ -214,56 +187,25 @@ const Profile = () => {
               />
             </TouchableHighlight>
           )}
-          <View
-            style={{
-              width: '70%',
-              alignItems: 'center',
-              marginTop: '1%',
-            }}>
+          <View style={styles.address}>
             {state.address ? (
               <Text
                 style={{textAlign: 'center', fontSize: 15, color: '#cffff6'}}>
                 {state.address}
               </Text>
             ) : (
-              <Text
-                style={{color: '#cffff6', fontSize: 15, textAlign: 'center'}}>
-                Update Your Location
-              </Text>
+              <Text style={styles.updateLoc}>Update Your Location</Text>
             )}
           </View>
         </View>
       </View>
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: '3%',
-          marginTop: '5%',
-        }}>
+      <View style={styles.wrapper}>
         <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginVertical: '2%',
-              paddingHorizontal: '2%',
-              paddingVertical: '4%',
-              alignItems: 'center',
-              elevation: 2,
-              borderRadius: 3,
-            }}>
+          <View style={styles.bar}>
             <Icon2 name="email" size={25} color="#0066ff" />
             <Text style={{marginLeft: '3%'}}>{email}</Text>
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              marginVertical: '2%',
-              paddingHorizontal: '2%',
-              paddingVertical: '4%',
-              alignItems: 'center',
-              elevation: 2,
-              borderRadius: 3,
-            }}>
+          <View style={styles.bar}>
             <FontAwesome5Icon name="phone" size={25} color="#0066ff" />
             <Text style={{marginLeft: '3%'}}>{phone}</Text>
           </View>
@@ -292,17 +234,8 @@ const Profile = () => {
                 marginTop: '3%',
                 backgroundColor: '#0066ff',
                 borderRadius: 9,
-                // marginHorizontal: 70,
               }}>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  paddingVertical: 10,
-                  color: 'white',
-                  fontSize: 16,
-                }}>
-                Logout
-              </Text>
+              <Text style={styles.btnLogout}>Logout</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -314,6 +247,66 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 2,
+    alignItems: 'center',
+    backgroundColor: '#0066ff',
+    paddingHorizontal: '3%',
+  },
+  textName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    letterSpacing: 0.7,
+    color: '#e3fffa',
+  },
+  textStatus: {
+    textAlign: 'center',
+    color: '#e3fffa',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  marker: {
+    marginTop: 5,
+    width: 50,
+    height: 50,
+    borderRadius: 50 / 2,
+    justifyContent: 'center',
+    elevation: 5,
+    backgroundColor: '#0070ff',
+  },
+  address: {
+    width: '70%',
+    alignItems: 'center',
+    marginTop: '1%',
+  },
+  updateLoc: {
+    color: '#cffff6',
+    fontSize: 17,
+    textAlign: 'center',
+    marginTop: 13,
+  },
+  wrapper: {
+    flex: 1,
+    paddingHorizontal: '3%',
+    marginTop: '5%',
+  },
+  bar: {
+    flexDirection: 'row',
+    marginVertical: '2%',
+    paddingHorizontal: '2%',
+    paddingVertical: 9,
+    alignItems: 'center',
+    elevation: 2,
+    borderRadius: 3,
+  },
+  btnLogout: {
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
+  },
   imgStyle: {
     borderColor: '#e3fffa',
     borderWidth: 2,
@@ -329,9 +322,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
-  },
-  profileWrapper: {
-    flex: 1,
-    paddingHorizontal: 15,
   },
 });
