@@ -13,7 +13,7 @@ with real-time features.
 
 ### Screenshots
 
-![Repo List](https://raw.githubusercontent.com/erlanggajatikusuma/chat-me/master/screenshots/Screenshot_2021-01-14-23-35-09-361_com.chatme.png)
+![Repo List](https://raw.githubusercontent.com/erlanggajatikusuma/chat-me/master/screenshots/Screenshot_2021-01-14-23-35-09-361_com.chatme.png | width=100)
 
 ### From PC
 
