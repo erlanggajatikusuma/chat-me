@@ -94,6 +94,8 @@ const TabNavigators = () => {
   return (
     <Tab.Navigator
       initialRouteName="Profile"
+      activeColor="#0066ff"
+      inactiveColor="#a1a4e3"
       screenOptions={({route}) => ({
         tabBarIcon: ({color, size}) => {
           let iconName;
@@ -108,10 +110,11 @@ const TabNavigators = () => {
           return <Icon name={iconName} size={20} color={color} />;
         },
       })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-      }}>
+      // tabBarOptions={{
+      //   activeTintColor: 'tomato',
+      //   inactiveTintColor: 'gray',
+      // }}
+      barStyle={{backgroundColor: '#FFF'}}>
       <Tab.Screen
         name="Chat"
         component={ChatStackScreen}
