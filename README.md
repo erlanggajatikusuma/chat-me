@@ -13,18 +13,14 @@ with real-time features.
 
 ### Screenshots
 
-<<<<<<< HEAD
 <p align='center'>
   <span>
-      <image width="200" src='./screenshots/Screenshot_2021-01-14-22-39-29-583_com.chatme.png' />
-      <image width="200" src='./screenshots/Screenshot_2021-01-14-23-35-09-361_com.chatme.png' />
-      <image width="200" src='./screenshots/Screenshot_2021-01-14-23-38-17-581_com.chatme.png' />
-      <image width="200" src='./screenshots/Screenshot_2021-01-14-23-39-02-837_com.chatme.png' />
+      <image width="400" src='./screenshots/Screenshot_2021-01-14-23-35-09-361_com.chatme.png' />
+      <image width="400" src='./screenshots/Screenshot_2021-01-14-23-38-17-581_com.chatme.png' />
+      <image width="400" src='./screenshots/Screenshot_2021-01-14-23-39-02-837_com.chatme.png' />
+      <image width="400" src='./screenshots/Screenshot_2021-01-14-22-39-29-583_com.chatme.png' />
   </span>
  </p>
-=======
-<image width="200" src='./screenshots/Screenshot_2021-01-14-23-35-09-361_com.chatme.png' />
->>>>>>> b8cb996aa1811d791dd7fd79e18d48b54c8f7504
 
 ### From PC
 
