@@ -32,6 +32,5 @@ with real-time features.
 
 ### From Android
 
-1. Open android/app/build/outputs/apk/
-2. Copy app-release.apk to your android phone
-3. Install it
+1. Copy app-release.apk to your android phone
+2. Install it
