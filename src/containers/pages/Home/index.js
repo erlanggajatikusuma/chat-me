@@ -11,7 +11,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import ChatThumb from '../../../components/molecules/ChatThumb';
-import ContentLoader, {FacebookLoader} from 'react-native-easy-content-loader';
 
 const Home = ({navigation}) => {
   const userId = auth().currentUser.uid;
@@ -107,25 +106,6 @@ const Home = ({navigation}) => {
             ) : null}
           </>
         )}
-        {/* {allUser.length > 0 ? (
-          <>
-            {allUser.map((allUs) => {
-              return (
-                <ChatThumb
-                  key={allUs.id}
-                  name={allUs.name}
-                  img={allUs.photo}
-                  status={allUs.status}
-                  toChat={() => toChat(allUs)}
-                />
-              );
-            })}
-          </>
-        ) : (
-          <View>
-            <Text>Empt</Text>
-          </View>
-        )} */}
       </ScrollView>
     </View>
   );

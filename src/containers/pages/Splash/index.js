@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import SplashImg from '../../../assets/image/SplashImg.png';
+import SplashImg from '../../../assets/image/chatme.jpg';
 
 const SplashScreen = () => {
   const navigation = useNavigation();

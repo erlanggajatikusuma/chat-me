@@ -44,7 +44,7 @@ const Register = () => {
           photo: '',
           status: 'Online',
           dateOfBirth: '',
-          date: new Date().getTime(),
+          date: '',
           latitude: '',
           longitude: '',
         });

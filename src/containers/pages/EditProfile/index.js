@@ -8,10 +8,8 @@ import {
   StyleSheet,
   Image,
   Platform,
-  PermissionsAndroid,
   ToastAndroid,
   ActivityIndicator,
-  Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
@@ -250,15 +248,8 @@ const EditProfile = () => {
                 <ImageBackground
                   source={{uri: photo}}
                   style={{height: 100, width: 100}}
-                  imageStyle={{borderRadius: 15}}>
-                  {/* <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    /> */}
-                </ImageBackground>
+                  imageStyle={{borderRadius: 15}}
+                />
               ) : (
                 <View style={styles.textImgWrapper}>
                   <Text style={styles.textImg}>{username.split(' ', 1)}</Text>
@@ -355,7 +346,7 @@ const EditProfile = () => {
             )}
           </View>
           {loading ? (
-            <Text>Loading ....</Text>
+            <ActivityIndicator size={40} color="#0066ff" />
           ) : (
             <TouchableOpacity style={styles.commandButton} onPress={updateUser}>
               <Text style={styles.panelButtonTitle}>Submit</Text>

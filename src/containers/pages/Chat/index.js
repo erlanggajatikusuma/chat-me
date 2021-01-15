@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {GiftedChat} from 'react-native-gifted-chat';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
 const Chat = () => {
   const route = useRoute();
+  const navigation = useNavigation();
 
   const {
     receiver,
@@ -95,11 +97,13 @@ const Chat = () => {
   return (
     <View style={{flex: 1}}>
       <View style={styles.header}>
-        <MaterialCommunityIcon
-          name="chevron-left"
-          style={{color: '#d5f7f6'}}
-          size={60}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+          <MaterialCommunityIcon
+            name="chevron-left"
+            style={{color: '#d5f7f6'}}
+            size={60}
+          />
+        </TouchableOpacity>
         {photo ? (
           <Image style={styles.imgHeader} source={{uri: photo}} />
         ) : null}

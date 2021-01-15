@@ -5,7 +5,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
   PermissionsAndroid,
   Alert,
   TouchableHighlight,
@@ -199,7 +198,11 @@ const Profile = () => {
           </View>
           <View style={styles.bar}>
             <FontAwesome5Icon name="phone" size={25} color="#0066ff" />
-            <Text style={{marginLeft: '3%'}}>{phone}</Text>
+            {phone ? (
+              <Text style={{marginLeft: '3%'}}>{phone}</Text>
+            ) : (
+              <Text style={{marginLeft: '3%'}}>Not Set</Text>
+            )}
           </View>
           <View>
             <TouchableOpacity
