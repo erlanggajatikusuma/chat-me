@@ -53,7 +53,7 @@ const EditProfile = () => {
   const [photo, setPhoto] = useState('');
   const [username, setUsername] = useState('Username');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [gender, setGender] = useState('Male');
+  const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
   const [state, setState] = useState({
     latitude: '',
@@ -68,7 +68,7 @@ const EditProfile = () => {
     user.on('value', (snapshot) => {
       setUsername(snapshot.val() !== null ? snapshot.val().name : '');
       setPhoneNumber(snapshot.val() !== null ? snapshot.val().phone : '');
-      setGender(snapshot.val().gender);
+      setGender(snapshot.val() !== null ? snapshot.val().gender : '');
       setPhoto(snapshot.val() !== null ? snapshot.val().photo : '');
       setDob(snapshot.val().dateOfBirth);
       setState({
@@ -295,9 +295,9 @@ const EditProfile = () => {
             </View>
             <Picker
               selectedValue={gender}
-              // style={{height: 50, width: 150}}
               style={styles.textInput}
               onValueChange={(itemValue, itemIndex) => setGender(itemValue)}>
+              <Picker.Item label="Choose" value="" />
               <Picker.Item label="Male" value="Male" />
               <Picker.Item label="Female" value="Female" />
             </Picker>

@@ -40,15 +40,7 @@ const ForgotPassword = () => {
       ) : (
         <ScrollView>
           <View style={{paddingTop: 75, paddingBottom: 35}}>
-            <Text
-              style={{
-                fontSize: 22,
-                fontWeight: '500',
-                textAlign: 'center',
-                color: '#7E98DF',
-              }}>
-              Forgot Password
-            </Text>
+            <Text style={styles.textForgot}>Forgot Password</Text>
           </View>
           <Text>You'll get messages soon on your e-mail</Text>
           {errorMessage && <Text style={{color: 'red'}}>{errorMessage}</Text>}
@@ -57,33 +49,14 @@ const ForgotPassword = () => {
             <TextInput
               onChangeText={(email) => setEmail(email)}
               value={email}
-              // onChangeText={(text) => handleOnChange('email', text)}
-              style={{
-                borderRadius: 3,
-                borderBottomWidth: 1,
-                borderBottomColor: '#232323',
-              }}
+              style={styles.inputEmail}
             />
           </View>
 
           <TouchableOpacity
             onPress={() => handleForgot()}
-            style={{
-              backgroundColor: '#7E98DF',
-              paddingHorizontal: 12,
-              paddingVertical: 15,
-              borderRadius: 70,
-              marginTop: 35,
-            }}>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 14,
-                fontWeight: 'bold',
-                color: '#FFF',
-              }}>
-              SEND
-            </Text>
+            style={styles.btnWrapper}>
+            <Text style={styles.btn}>SEND</Text>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -93,4 +66,29 @@ const ForgotPassword = () => {
 
 export default ForgotPassword;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  textForgot: {
+    fontSize: 22,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#7E98DF',
+  },
+  inputEmail: {
+    borderRadius: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: '#232323',
+  },
+  btnWrapper: {
+    backgroundColor: '#7E98DF',
+    paddingHorizontal: 12,
+    paddingVertical: 15,
+    borderRadius: 70,
+    marginTop: 35,
+  },
+  btn: {
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+});

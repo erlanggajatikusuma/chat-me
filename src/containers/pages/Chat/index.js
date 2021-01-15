@@ -21,10 +21,6 @@ const Chat = () => {
     senderPhoto,
   } = route.params;
 
-  const imgName = route.params.name;
-
-  const [loading, setLoading] = useState(false);
-
   const [state, setState] = useState({
     messages: [],
     receiver: receiver,
@@ -52,29 +48,6 @@ const Chat = () => {
       });
   };
 
-  const handleReceiver = () => {
-    database()
-      .ref('users')
-      .orderByChild('uid')
-      .equalTo(state.receiver)
-      .on('value', (snapshot) => {
-        setState({
-          ...state,
-          receiverDetail: snapshot.val(),
-        });
-        const initData = [];
-        Object.keys(snapshot.val()).map((key) => {
-          initData.push({
-            data: snapshot.val()[key],
-          });
-        });
-        setState({
-          ...state,
-          receiverDetail: initData[0].data,
-        });
-      });
-  };
-
   const onSend = async (messages = []) => {
     const message = {
       _id: Math.random().toString(36).substring(2),
@@ -90,7 +63,6 @@ const Chat = () => {
   useEffect(() => {
     let isMounted = true;
     getChat();
-    // handleReceiver();
     return () => (isMounted = false);
   }, []);
 
